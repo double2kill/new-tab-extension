@@ -1,0 +1,35 @@
+{
+  "name": "Copy Jira Commit Message",
+  "version": "1.0",
+  "description": "Copy Jira Commit Message!",
+  "permissions": [
+    "activeTab",
+    "declarativeContent",
+    "storage"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  },
+  "manifest_version": 2,
+  "content_scripts": [
+    {
+      "matches": [
+        "https://jira.ringcentral.com/*"
+      ],
+      "css": [
+        "jira.css",
+        "css/jquery.growl.css"
+      ],
+      "js": [
+        "js/jquery-3.5.1.min.js",
+        "js/jquery-ui.min.js",
+        "js/jquery.growl.js",
+        "js/clipboard.min.js",
+        "jira.js"
+      ]
+    }
+  ]
+}

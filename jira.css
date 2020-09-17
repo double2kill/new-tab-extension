@@ -1,0 +1,43 @@
+.ant-btn {
+    line-height: 24px;
+    position: relative;
+    display: inline-block;
+    font-weight: 400;
+    white-space: nowrap;
+    text-align: center;
+    background-image: none;
+    box-shadow: 0 2px 0 rgba(0,0,0,.015);
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    height: 24px;
+    padding: 5px 15px;
+    font-size: 14px;
+    border-radius: 4px;
+    color: rgba(0,0,0,.65);
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
+}
+
+.ant-btn-primary {
+    color: #fff;
+    background-color: #1890ff;
+    border-color: #1890ff;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.12);
+    box-shadow: 0 2px 0 rgba(0,0,0,.045);
+}
+
+.ant-btn-primary:focus, .ant-btn-primary:hover {
+    color: #fff;
+    background-color: #40a9ff;
+    border-color: #40a9ff;
+}
+
+#draggable {
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+}
