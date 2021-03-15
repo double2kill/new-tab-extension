@@ -19,16 +19,8 @@
       "matches": [
         "https://jira.ringcentral.com/*"
       ],
-      "css": [
-        "jira.css",
-        "css/jquery.growl.css"
-      ],
       "js": [
-        "js/jquery-3.5.1.min.js",
-        "js/jquery-ui.min.js",
-        "js/jquery.growl.js",
-        "js/clipboard.min.js",
-        "jira.js"
+        "build/main.js"
       ]
     }
   ]

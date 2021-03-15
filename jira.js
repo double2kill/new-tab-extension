@@ -1,12 +1,12 @@
 var copyCommitInfo = () => {
-    const jiraIdElement = document.querySelector('#issue-content a#key-val')
-    const jiraTitleElement = document.querySelector('#issue-content h1#summary-val')
+  const jiraIdElement = document.querySelector('#issue-content a#key-val')
+  const jiraTitleElement = document.querySelector('#issue-content h1#summary-val')
 
-    const jiraIdText = jiraIdElement && jiraIdElement.text
-    const jiraTitleText = jiraTitleElement && jiraTitleElement.innerText
+  const jiraIdText = jiraIdElement && jiraIdElement.text
+  const jiraTitleText = jiraTitleElement && jiraTitleElement.innerText
 
-    const commitText = `${jiraIdText} ${jiraTitleText}`;
-    return commitText
+  const commitText = `${jiraIdText} ${jiraTitleText}`
+  return commitText
 }
 
 var copyButton = document.createElement("div")
@@ -19,25 +19,25 @@ copyButton.innerHTML = buttonText
 
 var headerElement = document.querySelector('#issue-content .aui-page-header-main')
 if (headerElement) {
-    headerElement.appendChild(copyButton)
+  headerElement.appendChild(copyButton)
 }
 
-$("body").append(`<div id="draggable"><div id="jira-extension-copy_fixed" class="ant-btn ant-btn-primary">${buttonText}</div></div>`);
-$('#draggable').draggable();
+$("body").append(`<div id="draggable"><div id="jira-extension-copy_fixed" class="ant-btn ant-btn-primary">${buttonText}</div></div>`)
+$('#draggable').draggable()
 
 const copyText = function (trigger) {
-    const text = copyCommitInfo();
-    if (text.includes('null')) {
-        throw new Error()
-    }
-    $.growl.notice({ title: "复制成功", message: text, size: 'large', duration: 1500 });
-    return text
+  const text = copyCommitInfo()
+  if (text.includes('null')) {
+    throw new Error()
+  }
+  $.growl.notice({ title: "复制成功", message: text, size: 'large', duration: 1500 })
+  return text
 }
 
 new ClipboardJS('#jira-extension-copy', {
-    text: copyText
+  text: copyText
 })
 
 new ClipboardJS('#jira-extension-copy_fixed', {
-    text: copyText 
+  text: copyText 
 })
