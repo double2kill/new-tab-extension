@@ -14,5 +14,15 @@ export default defineConfig({
         format: 'iife'
       },
     }
+  },
+  css: {
+    preprocessorOptions: {
+      less: {
+        modifyVars: {
+          'link-color': '#3572b0',
+        },
+        javascriptEnabled: true
+      }
+    }
   }
 })

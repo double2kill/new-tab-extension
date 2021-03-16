@@ -3,7 +3,7 @@ import Antd from "ant-design-vue"
 import App from './App.vue'
 import CopyJiraButton from './components/copyJiraButton.vue'
 import { VueDraggableNext } from 'vue-draggable-next'
-import "ant-design-vue/dist/antd.css"
+import "ant-design-vue/dist/antd.less"
 
 const app = document.createElement("div")
 app.id = 'chrome-copy-jira'

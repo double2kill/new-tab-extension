@@ -23,10 +23,10 @@ const mainButtonRef = ref(null)
 onMounted(() => {
   const INITIAL_RIGHT = 50
   const INITIAL_BOTTOM = 50
-  const {offsetWidth, offsetHeight} = document.body
+  const {innerWidth, innerHeight} = document.defaultView
   const {width, height} = mainButtonRef.value.getBoundingClientRect()
-  position.x = `${offsetWidth - width - INITIAL_RIGHT}px`
-  position.y = `${offsetHeight - height - INITIAL_BOTTOM}px`
+  position.x = `${innerWidth - width - INITIAL_RIGHT}px`
+  position.y = `${innerHeight - height - INITIAL_BOTTOM}px`
 })
 
 let shiftX, shiftY
