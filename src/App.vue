@@ -3,12 +3,10 @@
     ref="mainButtonRef"
     class="draggble"
     :style="{
-      left: position.x,
-      top: position.y
+      left: `${position.x}px`,
+      top: `${position.y}px`
     }"
-    :draggable="true"
-    @dragstart="onStart"
-    @dragend="onEnd"
+    @mousedown="onStart"
   >
     <copy-jira-button />
   </div>
@@ -17,28 +15,41 @@
 <script setup>
 import {reactive, onMounted, ref} from 'vue'
 import CopyJiraButton from './components/copyJiraButton.vue'
-const position = reactive({ x: undefined, y: undefined })
+const position = reactive({ x: 0, y: 0, isDragging: false })
+const isDragging = reactive(false)
 const mainButtonRef = ref(null)
 
 onMounted(() => {
   const INITIAL_RIGHT = 50
   const INITIAL_BOTTOM = 50
-  const {innerWidth, innerHeight} = document.defaultView
+  const {offsetWidth, offsetHeight} = document.body
   const {width, height} = mainButtonRef.value.getBoundingClientRect()
-  position.x = `${innerWidth - width - INITIAL_RIGHT}px`
-  position.y = `${innerHeight - height - INITIAL_BOTTOM}px`
+  position.x = offsetWidth - width - INITIAL_RIGHT
+  position.y = offsetHeight - height - INITIAL_BOTTOM
 })
 
-let shiftX, shiftY
-const onStart = (event) => {
-  const {clientX, clientY, target} = event
-  shiftX = clientX - target.getBoundingClientRect().left
-  shiftY = clientY - target.getBoundingClientRect().top
+let prevX, prevY
+const onMove = (event) => {
+  const diffY = event.clientY - prevY
+  const diffX = event.clientX - prevX
+
+  position.y += diffY
+  position.x += diffX
+
+  prevY = event.clientY
+  prevX = event.clientX
 }
 const onEnd = (event) => {
-  const {clientX, clientY, target} = event
-  position.x = `${clientX - shiftX}px`
-  position.y = `${clientY - shiftY}px`
+  document.removeEventListener('pointermove', onMove)
+  document.removeEventListener('mouseup', onEnd)
+  event.stopPropagation()
+}
+const onStart = (event) => {
+  document.addEventListener('pointermove', onMove)
+  document.addEventListener('mouseup', onEnd)
+  prevY = event.clientY
+  prevX = event.clientX
+  position.isDragging = true
 }
 </script>
 
