@@ -7,5 +7,5 @@
   </a-button>
 </template>
 <script setup>
-import {copyCommitInfo} from '../jira'
+import {copyCommitInfo} from './jira'
 </script>

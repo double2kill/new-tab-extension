@@ -1,4 +1,4 @@
-import { message } from 'ant-design-vue'
+import { notification } from 'ant-design-vue'
 
 export const copyCommitInfo = () => {
   const jiraIdElement = document.querySelector('#issue-content a#key-val')
@@ -9,15 +9,17 @@ export const copyCommitInfo = () => {
   
   const commitText = `${jiraIdText} ${jiraTitleText}`
   if (commitText.includes('null')) {
-    message.error(
-      `复制失败: 没有找到元素`,
-      2,
-    )
+    notification.error({
+      message: '复制失败',
+      description: `没有找到元素`,
+      duration: 1.5,
+    })
     throw new Error()
   }
-  message.success(
-    `复制成功: ${commitText}`,
-    2,
-  )
+  notification.success({
+    message: '复制成功',
+    description: commitText,
+    duration: 1.5,
+  })
   return commitText
 }
