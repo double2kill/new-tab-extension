@@ -1,5 +1,9 @@
 import {ref} from 'vue'
 import Localstorage from 'localstorage'
+
+const jiraIdElement = document.querySelector('#issue-content a#key-val')
+export const jiraIdText = jiraIdElement && jiraIdElement.text
+
 export const jiraLocalStorage = new Localstorage('JIRA')
 
 export const drawerVisible = ref(false)
@@ -17,7 +21,5 @@ export const setDrawerText = (text) => {
 }
 
 export const hanldeTextChange = (event) => {
-  const jiraIdElement = document.querySelector('#issue-content a#key-val')
-  const jiraIdText = jiraIdElement && jiraIdElement.text
   jiraLocalStorage.put(jiraIdText, event.target.value)
 }

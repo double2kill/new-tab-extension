@@ -1,6 +1,6 @@
 <template>
   <a-drawer
-    title="Jira"
+    :title="`Jira: ${jiraIdText}`"
     placement="right"
     width="50%"
     :closable="true"
@@ -21,11 +21,9 @@
 <script setup>
 import { defineProps, onMounted } from 'vue'
 import Localstorage from 'localstorage'
-import {jiraLocalStorage, hanldeTextChange, drawerText, setDrawerText, closeDrawer} from './index'
+import {jiraLocalStorage, hanldeTextChange, drawerText, setDrawerText, closeDrawer, jiraIdText} from './index'
 
 onMounted(() => {
-  const jiraIdElement = document.querySelector('#issue-content a#key-val')
-  const jiraIdText = jiraIdElement && jiraIdElement.text
   const [error, value] = jiraLocalStorage.get(jiraIdText)
   setDrawerText(value)
 })
