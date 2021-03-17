@@ -8,13 +8,16 @@
     }"
     @mousedown="onStart"
   >
-    <copy-jira-button />
+    <CopyJiraButton />
+    <DrawerButton />
   </div>
 </template>
 
 <script setup>
 import {reactive, onMounted, ref} from 'vue'
-import CopyJiraButton from './components/copyJiraButton.vue'
+import CopyJiraButton from './components/CopyJiraButton.vue'
+import DrawerButton from './components/Drawer/DrawerButton.vue'
+
 const position = reactive({ x: 0, y: 0, isDragging: false })
 const isDragging = reactive(false)
 const mainButtonRef = ref(null)
@@ -55,6 +58,11 @@ const onStart = (event) => {
 
 <style>
 .draggble {
+  display: flex;
+  flex-direction: column;
   position: fixed;
+}
+.draggble > button + button {
+  margin-top: 10px;
 }
 </style>
