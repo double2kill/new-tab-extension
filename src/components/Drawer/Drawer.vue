@@ -19,6 +19,7 @@
     <p style="text-align: right">
       <a-button
         type="primary"
+        :disabled="isAddToListButtonDisabled"
         @click="addToList"
       >
         添加至列表
@@ -61,7 +62,8 @@ import {
   addToList,
   deleteItem,
   jiraIdText,
-  goToDetail
+  goToDetail,
+  isAddToListButtonDisabled
 } from "./index"
 import DetailDrawer from './DetailDrawer.vue'
 

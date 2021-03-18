@@ -1,4 +1,4 @@
-import {ref} from 'vue'
+import {ref, computed} from 'vue'
 import Localstorage from 'localstorage'
 
 const jiraIdElement = document.querySelector('#issue-content a#key-val')
@@ -28,6 +28,10 @@ export const setTextArea = (event) => {
   textarea.value = event.target.value
 }
 
+export const isAddToListButtonDisabled = computed(()=> {
+  return textarea.value.trim() === ''
+})
+
 export const tableData = ref([])
 
 export const setTableData = (value) => {
@@ -36,12 +40,14 @@ export const setTableData = (value) => {
 
 export const addToList = () => {
   const time = new Date().valueOf()
+  const text = textarea.value.trim()
   tableData.value.push({
-    text: textarea.value,
+    text,
     updateTime: time,
     id: time
   })
   jiraLocalStorage.put(jiraIdText, tableData.value)
+  textarea.value = ''
 }
 
 export const deleteItem = (id) => {
