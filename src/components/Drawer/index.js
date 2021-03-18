@@ -14,12 +14,68 @@ export const closeDrawer = () => {
   drawerVisible.value = false
 }
 
-export const drawerText = ref('')
-
-export const setDrawerText = (text) => {
-  drawerText.value = text
+export const detailDrawerVisible = ref(false)
+export const showDetailDrawer = () => {
+  detailDrawerVisible.value = true
+}
+export const closeDetailDrawer= () => {
+  detailDrawerVisible.value = false
 }
 
-export const hanldeTextChange = (event) => {
-  jiraLocalStorage.put(jiraIdText, event.target.value)
+export const textarea = ref('')
+
+export const setTextArea = (event) => {
+  textarea.value = event.target.value
+}
+
+export const tableData = ref([])
+
+export const setTableData = (value) => {
+  tableData.value = value
+}
+
+export const addToList = () => {
+  const time = new Date().valueOf()
+  tableData.value.push({
+    text: textarea.value,
+    updateTime: time,
+    id: time
+  })
+  jiraLocalStorage.put(jiraIdText, tableData.value)
+}
+
+export const deleteItem = (id) => {
+  tableData.value = tableData.value.filter(item => item.id !== id)
+  jiraLocalStorage.put(jiraIdText, tableData.value)
+}
+
+export const getTableDataFromLocalStorage = () => {
+  const [error, value] = jiraLocalStorage.get(jiraIdText)
+  if(value === undefined){
+    return
+  }
+  let data =
+    value instanceof Array
+      ? value
+      : [
+        {
+          text: value,
+        },
+      ]
+  data.forEach((item,index) => {
+    if(item.id === undefined) {
+      item.id = index
+    }
+    if(item.updateTime === undefined) {
+      item.updateTime = 0
+    }
+  })
+  setTableData(data)
+}
+
+export const detailInfo = ref({})
+
+export const goToDetail = (id) => {
+  detailInfo.value = tableData.value.find(item => item.id === id)
+  showDetailDrawer()
 }
