@@ -1,3 +1,4 @@
+
 <template>
   <a-drawer
     title="详情"
@@ -7,14 +8,15 @@
     :visible="detailDrawerVisible"
     @close="closeDetailDrawer"
   >
-    <p class="detail-info">
-      {{ detailInfo.text }}
-    </p>
+    <p
+      class="detail-info"
+      v-html="detailInfoHTMLText"
+    />
   </a-drawer>
 </template>
 
 <script setup>
-import {detailDrawerVisible, closeDetailDrawer, detailInfo} from './index'
+import {detailDrawerVisible, closeDetailDrawer, detailInfoHTMLText} from './index'
 
 </script>
 

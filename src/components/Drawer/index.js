@@ -1,5 +1,6 @@
 import {ref, computed} from 'vue'
 import Localstorage from 'localstorage'
+import linkifyHtml from 'linkifyjs/html'
 
 const jiraIdElement = document.querySelector('#issue-content a#key-val')
 export const jiraIdText = jiraIdElement && jiraIdElement.text
@@ -80,6 +81,17 @@ export const getTableDataFromLocalStorage = () => {
 }
 
 export const detailInfo = ref({})
+
+export const detailInfoHTMLText = computed(() => {
+  if(detailInfo.value.text === undefined){
+    return ''
+  }
+  return linkifyHtml(detailInfo.value.text, {
+    target: {
+      url: '_blank'
+    }
+  })
+})
 
 export const goToDetail = (id) => {
   detailInfo.value = tableData.value.find(item => item.id === id)

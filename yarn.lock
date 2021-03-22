@@ -993,6 +993,11 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
+linkifyjs@^3.0.0-beta.3:
+  version "3.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/linkifyjs/-/linkifyjs-3.0.0-beta.3.tgz#40697995d7ecf85c464924a30b9e98b1cd6fb253"
+  integrity sha512-aXq4WJs91NsETo5f9dQrt8Vx+OxAvzJAtR8lLgpum8PDjtCgstycwYbIkAjDGRV/YF1LlKKdbWyOpgMYgwgOvQ==
+
 loader-utils@^1.1.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.4.0.tgz#c579b5e34cb34b1a74edc6c1fb36bfa371d5a613"
