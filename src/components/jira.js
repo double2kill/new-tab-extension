@@ -1,4 +1,5 @@
 import { notification } from 'ant-design-vue'
+import { copyText } from 'vue3-clipboard'
 
 export const copyCommitInfo = () => {
   const jiraIdElement = document.querySelector('#issue-content a#key-val')
@@ -16,10 +17,18 @@ export const copyCommitInfo = () => {
     })
     throw new Error()
   }
-  notification.success({
-    message: '复制成功',
-    description: commitText,
-    duration: 1.5,
+  copyText(commitText, undefined, (error, event) => {
+    if (error) {
+      notification.error({
+        message: '复制失败',
+        duration: 1.5,
+      })
+    } else {
+      notification.success({
+        message: '复制成功',
+        description: commitText,
+        duration: 1.5,
+      })
+    }
   })
-  return commitText
 }

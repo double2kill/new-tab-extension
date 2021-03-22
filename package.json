@@ -14,7 +14,8 @@
     "localstorage": "^1.0.1",
     "vite": "^2.0.5",
     "vue": "3.0.5",
-    "vue-draggable-next": "^2.0.1"
+    "vue-draggable-next": "^2.0.1",
+    "vue3-clipboard": "^1.0.0"
   },
   "devDependencies": {
     "babel-plugin-import": "^1.13.3",
