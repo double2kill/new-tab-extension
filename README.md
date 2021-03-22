@@ -7,6 +7,15 @@ $ yarn dev
 $ yarn build
 ```
 
+# Tree
+|-- index.html   定义 dev 环境使用的html,可以用于本地造一些页面数据进行测试
+|-- manifest.json   定义插件的 manifest,指定 build/main.js
+|-- vite.config.json    指定 vite build 生成的Path
+|-- build
+| `-- main.js   插件运行的 js, 需要每次都生成
+|-- src 文件夹使用 vue3.0
+
+
 # TODO
 * 需要注意防止 xss 攻击
 
