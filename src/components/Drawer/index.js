@@ -1,14 +1,16 @@
-import {ref, computed} from 'vue'
+import {ref, computed, watchEffect} from 'vue'
 import Localstorage from 'localstorage'
 import linkifyHtml from 'linkifyjs/html'
+import {getjiraIdText} from '../jira'
 
-const jiraIdElement = document.querySelector('#issue-content a#key-val')
-export const jiraIdText = jiraIdElement && jiraIdElement.text
+export const jiraIdText = ref('')
 
 export const jiraLocalStorage = new Localstorage('JIRA')
 
 export const drawerVisible = ref(false)
 export const showDrawer = () => {
+  jiraIdText.value = getjiraIdText()
+  getTableDataFromLocalStorage()
   drawerVisible.value = true
 }
 export const closeDrawer = () => {
@@ -47,18 +49,19 @@ export const addToList = () => {
     updateTime: time,
     id: time
   })
-  jiraLocalStorage.put(jiraIdText, tableData.value)
+  jiraLocalStorage.put(jiraIdText.value, tableData.value)
   textarea.value = ''
 }
 
 export const deleteItem = (id) => {
   tableData.value = tableData.value.filter(item => item.id !== id)
-  jiraLocalStorage.put(jiraIdText, tableData.value)
+  jiraLocalStorage.put(jiraIdText.value, tableData.value)
 }
 
 export const getTableDataFromLocalStorage = () => {
-  const [error, value] = jiraLocalStorage.get(jiraIdText)
+  const [error, value] = jiraLocalStorage.get(jiraIdText.value)
   if(value === undefined){
+    setTableData([])
     return
   }
   let data =

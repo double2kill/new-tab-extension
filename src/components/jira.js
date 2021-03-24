@@ -1,12 +1,16 @@
 import { notification } from 'ant-design-vue'
 import { copyText } from 'vue3-clipboard'
 
+export const getjiraIdText = () => {
+  const jiraIdElement = document.querySelector('#issue-content a#key-val')
+  return jiraIdElement && jiraIdElement.text
+}
+
 export const copyCommitInfo = () => {
   const jiraIdElement = document.querySelector('#issue-content a#key-val')
   const jiraTitleElement = document.querySelector('#issue-content h1#summary-val')
 
-  const jiraIdText = jiraIdElement && jiraIdElement.text
-  const jiraTitleText = jiraTitleElement && jiraTitleElement.innerText
+  const jiraIdText = getjiraIdText()
 
   const commitText = `${jiraIdText} ${jiraTitleText}`
   if (commitText.includes('null')) {
