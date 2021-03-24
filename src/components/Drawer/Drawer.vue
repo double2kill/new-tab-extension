@@ -1,6 +1,6 @@
 <template>
   <a-drawer
-    :title="`Jira: ${jiraIdText}`"
+    :title="drawerTitle"
     placement="right"
     width="50%"
     :closable="true"
@@ -11,7 +11,7 @@
       <a-textarea
         :value="textarea"
         width="50%"
-        placeholder="请输入备忘录"
+        placeholder="请输入备忘录文本"
         rows="4"
         @change="setTextArea"
       />
@@ -63,7 +63,8 @@ import {
   deleteItem,
   jiraIdText,
   goToDetail,
-  isAddToListButtonDisabled
+  isAddToListButtonDisabled,
+  drawerTitle
 } from "./index"
 import DetailDrawer from './DetailDrawer.vue'
 

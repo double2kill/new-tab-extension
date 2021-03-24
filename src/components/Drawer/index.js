@@ -8,8 +8,8 @@ export const jiraIdText = ref('')
 export const jiraLocalStorage = new Localstorage('JIRA')
 
 export const drawerVisible = ref(false)
-export const showDrawer = () => {
-  jiraIdText.value = getjiraIdText()
+export const showDrawer = ({isGlobal}) => {
+  jiraIdText.value = isGlobal ? '' : getjiraIdText()
   getTableDataFromLocalStorage()
   drawerVisible.value = true
 }
@@ -33,6 +33,10 @@ export const setTextArea = (event) => {
 
 export const isAddToListButtonDisabled = computed(()=> {
   return textarea.value.trim() === ''
+})
+
+export const drawerTitle = computed(() => {
+  return jiraIdText.value ? `Jira: ${jiraIdText.value}` : '备忘录'
 })
 
 export const tableData = ref([])

@@ -1,6 +1,9 @@
 <template>
-  <a-button @click="showDrawer">
-    打开面板
+  <a-button @click="showDrawer({isGlobal: true})">
+    打开备忘录
+  </a-button>
+  <a-button @click="showDrawer({isGlobal: false})">
+    打开ID备忘录
   </a-button>
   <Drawer 
     :visible="drawerVisible"
