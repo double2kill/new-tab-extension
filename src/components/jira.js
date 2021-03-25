@@ -7,10 +7,10 @@ export const getjiraIdText = () => {
 }
 
 export const copyCommitInfo = () => {
-  const jiraIdElement = document.querySelector('#issue-content a#key-val')
   const jiraTitleElement = document.querySelector('#issue-content h1#summary-val')
 
   const jiraIdText = getjiraIdText()
+  const jiraTitleText = jiraTitleElement && jiraTitleElement.innerText
 
   const commitText = `${jiraIdText} ${jiraTitleText}`
   if (commitText.includes('null')) {
