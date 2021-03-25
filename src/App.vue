@@ -55,6 +55,7 @@ onMounted(() => {
 <style>
 .draggble {
   position: fixed;
+  z-index: 1000;
 }
 .jira-extension-card{
   box-shadow: 0 2px 8px rgb(0 0 0 / 18%);
