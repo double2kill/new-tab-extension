@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import Antd from "ant-design-vue"
 import App from './App.vue'
-import CopyJiraButton from './components/copyJiraButton.vue'
+import CopyJiraButton from './components/CopyJiraButton.vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import "ant-design-vue/dist/antd.less"
 

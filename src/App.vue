@@ -53,6 +53,9 @@ onMounted(() => {
 </script>
 
 <style>
+.no-select {
+  user-select: none;
+}
 .draggble {
   position: fixed;
   z-index: 1000;
