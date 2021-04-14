@@ -5,7 +5,7 @@
   <a-button @click="showDrawer({isGlobal: false})">
     打开ID备忘录
   </a-button>
-  <Drawer 
+  <Drawer
     :visible="drawerVisible"
   />
 </template>

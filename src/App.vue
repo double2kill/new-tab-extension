@@ -36,10 +36,10 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue"
-import { DragOutlined } from "@ant-design/icons-vue"
-import CopyJiraButton from "./components/CopyJiraButton.vue"
-import DrawerButton from "./components/Drawer/DrawerButton.vue"
+import { onMounted } from 'vue'
+import { DragOutlined } from '@ant-design/icons-vue'
+import CopyJiraButton from './components/CopyJiraButton.vue'
+import DrawerButton from './components/Drawer/DrawerButton.vue'
 import {
   position,
   mainButtonRef,
@@ -48,7 +48,7 @@ import {
   onStart,
   jiraPositionLocalStorage,
   isHoverAtContainerWhenLeave,
-} from "./App"
+} from './App'
 
 onMounted(() => {
   const [error, positionValue] = jiraPositionLocalStorage.get()

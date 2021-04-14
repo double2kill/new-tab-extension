@@ -49,8 +49,8 @@
 </template>
 
 <script setup>
-import { defineProps, onMounted } from "vue"
-import Localstorage from "localstorage"
+import { defineProps, onMounted } from 'vue'
+import Localstorage from 'localstorage'
 import moment from 'moment'
 import {
   getTableDataFromLocalStorage,
@@ -65,29 +65,29 @@ import {
   goToDetail,
   isAddToListButtonDisabled,
   drawerTitle
-} from "./index"
+} from './index'
 import DetailDrawer from './DetailDrawer.vue'
 
 const columns = [
   {
-    dataIndex: "text",
-    key: "text",
-    title: "备忘录",
+    dataIndex: 'text',
+    key: 'text',
+    title: '备忘录',
     ellipsis: true,
   },
   {
-    dataIndex: "updateTime",
-    key: "updateTime",
-    title: "更新时间",
+    dataIndex: 'updateTime',
+    key: 'updateTime',
+    title: '更新时间',
     defaultSortOrder: 'descend',
     sorter: (a, b) => a.updateTime - b.updateTime,
     slots: { customRender: 'updateTime' },
   },
   {
-    title: "操作",
-    key: "action",
+    title: '操作',
+    key: 'action',
     width: 150,
-    slots: { customRender: "action" },
+    slots: { customRender: 'action' },
   },
 ]
 

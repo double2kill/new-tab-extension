@@ -31,7 +31,7 @@ export const setTextArea = (event) => {
   textarea.value = event.target.value
 }
 
-export const isAddToListButtonDisabled = computed(()=> {
+export const isAddToListButtonDisabled = computed(() => {
   return textarea.value.trim() === ''
 })
 
@@ -64,7 +64,7 @@ export const deleteItem = (id) => {
 
 export const getTableDataFromLocalStorage = () => {
   const [error, value] = jiraLocalStorage.get(jiraIdText.value)
-  if(value === undefined){
+  if (value === undefined) {
     setTableData([])
     return
   }
@@ -77,10 +77,10 @@ export const getTableDataFromLocalStorage = () => {
         },
       ]
   data.forEach((item,index) => {
-    if(item.id === undefined) {
+    if (item.id === undefined) {
       item.id = index
     }
-    if(item.updateTime === undefined) {
+    if (item.updateTime === undefined) {
       item.updateTime = 0
     }
   })
@@ -90,7 +90,7 @@ export const getTableDataFromLocalStorage = () => {
 export const detailInfo = ref({})
 
 export const detailInfoHTMLText = computed(() => {
-  if(detailInfo.value.text === undefined){
+  if (detailInfo.value.text === undefined) {
     return ''
   }
   return linkifyHtml(detailInfo.value.text, {

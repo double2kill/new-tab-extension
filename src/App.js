@@ -21,19 +21,19 @@ const getMaxInfo = () => {
 
 const checkTouchWindowBorder = () => {
   const {maxX, maxY} = getMaxInfo()
-  if(position.y === 0) {
+  if (position.y === 0) {
     position.touchBorder = 'top'
     return
   }
-  if(position.x === maxX) {
+  if (position.x === maxX) {
     position.touchBorder = 'right'
     return
   }
-  if(position.y === maxY) {
+  if (position.y === maxY) {
     position.touchBorder = 'bottom'
     return
   }
-  if(position.x === 0) {
+  if (position.x === 0) {
     position.touchBorder = 'left'
     return
   }
@@ -89,9 +89,9 @@ document.addEventListener('mouseleave', (event) => {
   const isLeaveFromBottom = insideAtX && clientY > height - DETECT_TOLERANCE && position.touchBorder === 'bottom'
   const isLeaveFromLeft = insideAtY && clientX < DETECT_TOLERANCE && position.touchBorder === 'left'
 
-  if(isLeaveFromTop || isLeaveFromRight || isLeaveFromBottom || isLeaveFromLeft) {
+  if (isLeaveFromTop || isLeaveFromRight || isLeaveFromBottom || isLeaveFromLeft) {
     isHoverAtContainerWhenLeave.value = true
-    return 
+    return
   }
 })
 
