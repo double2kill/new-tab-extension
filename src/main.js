@@ -1,11 +1,18 @@
 import { createApp } from 'vue'
-import Antd from 'ant-design-vue'
+import { Button, Card, Drawer, Input, Table, Divider, Pagination } from 'ant-design-vue'
 import App from './App.vue'
 import CopyJiraButton from './components/CopyJiraButton.vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import {doDataMigrationToChromeStorage} from './utils/chromeStorage'
 import {setInitialConfigFromStorage} from './utils/configs'
-import 'ant-design-vue/dist/antd.less'
+import 'ant-design-vue/lib/button/style/index.less'
+import 'ant-design-vue/lib/card/style/index.less'
+import 'ant-design-vue/lib/drawer/style/index.less'
+import 'ant-design-vue/lib/input/style/index.less'
+import 'ant-design-vue/lib/table/style/index.less'
+import 'ant-design-vue/lib/divider/style/index.less'
+import 'ant-design-vue/lib/pagination/style/index.less'
+import 'ant-design-vue/lib/notification/style/index.less'
 
 const app = document.createElement('div')
 app.id = 'chrome-copy-jira'
@@ -16,7 +23,13 @@ const main = async () => {
   await doDataMigrationToChromeStorage()
   await setInitialConfigFromStorage()
   createApp(App)
-    .use(Antd)
+    .use(Button)
+    .use(Card)
+    .use(Drawer)
+    .use(Input)
+    .use(Table)
+    .use(Divider)
+    .use(Pagination)
     .component('draggable', VueDraggableNext)
     .mount('#chrome-copy-jira')
 
@@ -27,7 +40,7 @@ const main = async () => {
   if (headerElement) {
     headerElement.appendChild(buttonSpan)
     createApp(CopyJiraButton)
-      .use(Antd)
+      .use(Button)
       .mount('#chrome-copy-jira-inner')
   }
 }

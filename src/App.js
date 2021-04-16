@@ -10,9 +10,9 @@ let diffY, diffX
 
 const getMaxInfo = () => {
   const {width, height} = mainButtonRef.value.getBoundingClientRect()
-  const {offsetWidth, offsetHeight} = document.body
-  const maxY = offsetHeight - height
-  const maxX = offsetWidth - width
+  const { innerWidth, innerHeight } = window
+  const maxY = innerHeight - height
+  const maxX = innerWidth - width
   return {
     maxX, maxY
   }

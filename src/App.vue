@@ -60,10 +60,10 @@ onMounted(() => {
   }
   const INITIAL_RIGHT = 50
   const INITIAL_BOTTOM = 50
-  const { offsetWidth, offsetHeight } = document.body
+  const { innerWidth, innerHeight } = window
   const { width, height } = mainButtonRef.value.getBoundingClientRect()
-  position.x = offsetWidth - width - INITIAL_RIGHT
-  position.y = offsetHeight - height - INITIAL_BOTTOM
+  position.x = innerWidth - width - INITIAL_RIGHT
+  position.y = innerHeight - height - INITIAL_BOTTOM
 })
 </script>
 
@@ -75,6 +75,7 @@ onMounted(() => {
   position: fixed;
   z-index: 1000;
   transition: transform 0.5s;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 .jira-extension-card {
   box-shadow: 0 2px 8px rgb(0 0 0 / 18%);
@@ -118,5 +119,18 @@ onMounted(() => {
 .hover-when-leave {
   transform: translateX(0%);
   transform: translateY(0%);
+}
+.ant-drawer,
+.ant-notification {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+.ant-drawer a {
+  color: #1890ff;
+}
+
+.ant-drawer TH, .ant-drawer TD {
+  font-family: inherit;
+  font-size: 14px;
 }
 </style>
