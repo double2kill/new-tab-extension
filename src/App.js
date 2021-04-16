@@ -1,7 +1,6 @@
 import {reactive, ref} from 'vue'
-import Localstorage from 'localstorage'
+import { storageSet} from './utils/chromeStorage'
 
-export const jiraPositionLocalStorage = new Localstorage('JIRA_POSITION')
 export const position = reactive({ x: 0, y: 0, touchBorder: 'none', dragging: false})
 export const mainButtonRef = ref(null)
 export const isHoverAtContainerWhenLeave = ref(false)
@@ -64,7 +63,7 @@ export const onEnd = (event) => {
   document.removeEventListener('pointermove', onMove)
   document.removeEventListener('mouseup', onEnd)
   checkTouchWindowBorder()
-  jiraPositionLocalStorage.put(undefined, position)
+  storageSet('JIRA_POSITION', position)
   event.stopPropagation()
 }
 
