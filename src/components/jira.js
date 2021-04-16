@@ -3,7 +3,7 @@ import { copyText } from 'vue3-clipboard'
 
 export const getjiraIdText = () => {
   const jiraIdElement = document.querySelector('#issue-content a#key-val')
-  return jiraIdElement && jiraIdElement.text
+  return jiraIdElement && jiraIdElement.text || ''
 }
 
 export const copyCommitInfo = () => {
