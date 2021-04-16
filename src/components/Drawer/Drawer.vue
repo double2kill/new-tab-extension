@@ -76,6 +76,12 @@ const columns = [
     ellipsis: true,
   },
   {
+    dataIndex: 'origin',
+    key: 'origin',
+    title: '站点',
+    ellipsis: true,
+  },
+  {
     dataIndex: 'updateTime',
     key: 'updateTime',
     title: '更新时间',

@@ -1,16 +1,14 @@
-import {ref, computed, watchEffect} from 'vue'
-import Localstorage from 'localstorage'
+import {ref, computed} from 'vue'
+import {globalStorage} from '../../utils/chromeStorage'
 import linkifyHtml from 'linkifyjs/html'
 import {getjiraIdText} from '../jira'
 
 export const jiraIdText = ref('')
 
-export const jiraLocalStorage = new Localstorage('JIRA')
-
 export const drawerVisible = ref(false)
-export const showDrawer = ({isGlobal}) => {
+export const showDrawer = async ({isGlobal}) => {
   jiraIdText.value = isGlobal ? '' : getjiraIdText()
-  getTableDataFromLocalStorage()
+  await getTableDataFromLocalStorage()
   drawerVisible.value = true
 }
 export const closeDrawer = () => {
@@ -45,46 +43,27 @@ export const setTableData = (value) => {
   tableData.value = value
 }
 
-export const addToList = () => {
+export const addToList = async () => {
   const time = new Date().valueOf()
   const text = textarea.value.trim()
-  tableData.value.push({
+  await globalStorage.add(jiraIdText.value, {
     text,
     updateTime: time,
-    id: time
+    id: time,
+    origin: window.location.origin
   })
-  jiraLocalStorage.put(jiraIdText.value, tableData.value)
+  await getTableDataFromLocalStorage()
   textarea.value = ''
 }
 
-export const deleteItem = (id) => {
-  tableData.value = tableData.value.filter(item => item.id !== id)
-  jiraLocalStorage.put(jiraIdText.value, tableData.value)
+export const deleteItem = async (id) => {
+  await globalStorage.delete(jiraIdText.value, id)
+  await getTableDataFromLocalStorage()
 }
 
-export const getTableDataFromLocalStorage = () => {
-  const [error, value] = jiraLocalStorage.get(jiraIdText.value)
-  if (value === undefined) {
-    setTableData([])
-    return
-  }
-  let data =
-    value instanceof Array
-      ? value
-      : [
-        {
-          text: value,
-        },
-      ]
-  data.forEach((item,index) => {
-    if (item.id === undefined) {
-      item.id = index
-    }
-    if (item.updateTime === undefined) {
-      item.updateTime = 0
-    }
-  })
-  setTableData(data)
+export const getTableDataFromLocalStorage = async () => {
+  const value = await globalStorage.get(jiraIdText.value)
+  setTableData(value)
 }
 
 export const detailInfo = ref({})
