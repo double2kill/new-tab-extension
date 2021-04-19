@@ -50,7 +50,8 @@ export const addToList = async () => {
     text,
     updateTime: time,
     id: time,
-    origin: window.location.origin
+    origin: window.location.origin,
+    href: window.location.href
   })
   await getTableDataFromLocalStorage()
   textarea.value = ''

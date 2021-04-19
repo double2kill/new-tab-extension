@@ -2,7 +2,6 @@ import { createApp } from 'vue'
 import { Button, Card, Drawer, Input, Table, Divider, Pagination } from 'ant-design-vue'
 import App from './App.vue'
 import CopyJiraButton from './components/CopyJiraButton.vue'
-import { VueDraggableNext } from 'vue-draggable-next'
 import {doDataMigrationToChromeStorage} from './utils/chromeStorage'
 import {setInitialConfigFromStorage} from './utils/configs'
 import 'ant-design-vue/lib/button/style/index.less'
@@ -13,6 +12,7 @@ import 'ant-design-vue/lib/table/style/index.less'
 import 'ant-design-vue/lib/divider/style/index.less'
 import 'ant-design-vue/lib/pagination/style/index.less'
 import 'ant-design-vue/lib/notification/style/index.less'
+import 'ant-design-vue/lib/icon/style/index.less'
 
 const app = document.createElement('div')
 app.id = 'chrome-copy-jira'
@@ -30,7 +30,6 @@ const main = async () => {
     .use(Table)
     .use(Divider)
     .use(Pagination)
-    .component('draggable', VueDraggableNext)
     .mount('#chrome-copy-jira')
 
   const buttonSpan = document.createElement('span')

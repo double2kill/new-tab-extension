@@ -33,6 +33,14 @@
         emptyText:'无数据,请添加至列表'
       }"
     >
+      <template #href="{record}">
+        <a
+          :href="record.href"
+          target="__blank"
+        >
+          {{ record.href }}
+        </a>
+      </template>
       <template #updateTime="{record}">
         {{ moment(record.updateTime).format('YYYY-MM-DD HH:mm:ss') }}
       </template>
@@ -67,6 +75,11 @@ import {
   drawerTitle
 } from './index'
 import DetailDrawer from './DetailDrawer.vue'
+import { LinkOutlined } from '@ant-design/icons-vue'
+
+const openPage = (href) => {
+  window.open(href)
+}
 
 const columns = [
   {
@@ -76,10 +89,10 @@ const columns = [
     ellipsis: true,
   },
   {
-    dataIndex: 'origin',
-    key: 'origin',
-    title: '站点',
-    ellipsis: true,
+    dataIndex: 'href',
+    key: 'href',
+    title: '网址',
+    slots: { customRender: 'href' },
   },
   {
     dataIndex: 'updateTime',
