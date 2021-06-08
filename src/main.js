@@ -3,7 +3,7 @@ import { Button, Card, Drawer, Input, Table, Divider, Pagination } from 'ant-des
 import App from './App.vue'
 import CopyJiraButton from './components/CopyJiraButton.vue'
 import {doDataMigrationToChromeStorage} from './utils/chromeStorage'
-import {setInitialConfigFromStorage} from './utils/configs'
+import {setInitialConfigFromStorage, isDev} from './utils/configs'
 import 'ant-design-vue/lib/button/style/index.less'
 import 'ant-design-vue/lib/card/style/index.less'
 import 'ant-design-vue/lib/drawer/style/index.less'
@@ -14,12 +14,15 @@ import 'ant-design-vue/lib/pagination/style/index.less'
 import 'ant-design-vue/lib/notification/style/index.less'
 import 'ant-design-vue/lib/icon/style/index.less'
 
-const app = document.createElement('div')
-app.id = 'chrome-copy-jira'
+export const main = async (skipLoadProdExtension) => {
+  if (skipLoadProdExtension) {
+    return
+  }
 
-document.body.appendChild(app)
+  const app = document.createElement('div')
+  app.id = 'chrome-copy-jira'
+  document.body.appendChild(app)
 
-const main = async () => {
   await doDataMigrationToChromeStorage()
   await setInitialConfigFromStorage()
   createApp(App)
@@ -44,4 +47,4 @@ const main = async () => {
   }
 }
 
-main()
+main(isDev)

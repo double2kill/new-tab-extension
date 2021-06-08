@@ -9,3 +9,5 @@ export const setInitialConfigFromStorage = async () => {
 export const getInitialConfig = (key) => {
   return config[key]
 }
+
+export const isDev = document.getElementById('is-dev')

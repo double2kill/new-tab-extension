@@ -47,10 +47,12 @@ import {
   onEnd,
   onStart,
   isHoverAtContainerWhenLeave,
+  addEventsToDocument
 } from './App'
 import { getInitialConfig } from './utils/configs'
 
 onMounted(() => {
+  addEventsToDocument()
   const positionValue = getInitialConfig('JIRA_POSITION')
   if (positionValue) {
     position.x = positionValue.x

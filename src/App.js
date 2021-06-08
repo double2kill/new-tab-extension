@@ -75,25 +75,27 @@ export const onStart = (event) => {
   document.body.classList.add('no-select')
 }
 
-document.addEventListener('mouseleave', (event) => {
-  // 当鼠标移出窗口时，hover不会触发，所以需要多一个状态来标记 Hover .
-  const {clientX, clientY} = event
-  const {width, height} = mainButtonRef.value.getBoundingClientRect()
+export const addEventsToDocument = () => {
+  document.addEventListener('mouseleave', (event) => {
+    // 当鼠标移出窗口时，hover不会触发，所以需要多一个状态来标记 Hover .
+    const {clientX, clientY} = event
+    const {width, height} = mainButtonRef.value.getBoundingClientRect()
 
-  const insideAtX = clientX > position.x && clientX < position.x + width
-  const insideAtY = clientY > position.y && clientY < position.y + height
+    const insideAtX = clientX > position.x && clientX < position.x + width
+    const insideAtY = clientY > position.y && clientY < position.y + height
 
-  const isLeaveFromTop = insideAtX && clientY < DETECT_TOLERANCE && position.touchBorder === 'top'
-  const isLeaveFromRight = insideAtY && clientX > width - DETECT_TOLERANCE && position.touchBorder === 'right'
-  const isLeaveFromBottom = insideAtX && clientY > height - DETECT_TOLERANCE && position.touchBorder === 'bottom'
-  const isLeaveFromLeft = insideAtY && clientX < DETECT_TOLERANCE && position.touchBorder === 'left'
+    const isLeaveFromTop = insideAtX && clientY < DETECT_TOLERANCE && position.touchBorder === 'top'
+    const isLeaveFromRight = insideAtY && clientX > width - DETECT_TOLERANCE && position.touchBorder === 'right'
+    const isLeaveFromBottom = insideAtX && clientY > height - DETECT_TOLERANCE && position.touchBorder === 'bottom'
+    const isLeaveFromLeft = insideAtY && clientX < DETECT_TOLERANCE && position.touchBorder === 'left'
 
-  if (isLeaveFromTop || isLeaveFromRight || isLeaveFromBottom || isLeaveFromLeft) {
-    isHoverAtContainerWhenLeave.value = true
-    return
-  }
-})
+    if (isLeaveFromTop || isLeaveFromRight || isLeaveFromBottom || isLeaveFromLeft) {
+      isHoverAtContainerWhenLeave.value = true
+      return
+    }
+  })
 
-document.addEventListener('mouseenter', () => {
-  isHoverAtContainerWhenLeave.value = false
-})
+  document.addEventListener('mouseenter', () => {
+    isHoverAtContainerWhenLeave.value = false
+  })
+}
