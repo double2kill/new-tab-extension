@@ -7,13 +7,23 @@ $ yarn dev
 $ yarn build
 ```
 
+# How to install
+
+Step 1: download or git clone
+
+Step 2: open chrome://extensions/
+
+Step 3: load unpacked and choose root dir (parent dir of manifest.json)
+
 # Tree
+```
 |-- index.html   定义 dev 环境使用的html,可以用于本地造一些页面数据进行测试
 |-- manifest.json   定义插件的 manifest,指定 build/main.js
 |-- vite.config.json    指定 vite build 生成的Path
 |-- build
 | `-- main.js   插件运行的 js, 需要每次都生成
 |-- src 文件夹使用 vue3.0
+```
 
 
 # TODO
