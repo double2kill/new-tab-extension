@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { Button, Card, Drawer, Input, Table, Divider, Pagination } from 'ant-design-vue'
+import { Button, Card, Drawer, Input, Table, Divider, Pagination, Collapse } from 'ant-design-vue'
 import App from './App.vue'
 import CopyJiraButton from './components/CopyJiraButton.vue'
 import {doDataMigrationToChromeStorage} from './utils/chromeStorage'
@@ -12,6 +12,7 @@ import 'ant-design-vue/lib/table/style/index.less'
 import 'ant-design-vue/lib/divider/style/index.less'
 import 'ant-design-vue/lib/pagination/style/index.less'
 import 'ant-design-vue/lib/notification/style/index.less'
+import 'ant-design-vue/lib/collapse/style/index.less'
 import 'ant-design-vue/lib/icon/style/index.less'
 
 export const main = async (skipLoadProdExtension) => {
@@ -33,6 +34,7 @@ export const main = async (skipLoadProdExtension) => {
     .use(Table)
     .use(Divider)
     .use(Pagination)
+    .use(Collapse)
     .mount('#chrome-copy-jira')
 
   const buttonSpan = document.createElement('span')

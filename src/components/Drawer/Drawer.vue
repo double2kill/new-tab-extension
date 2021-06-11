@@ -7,27 +7,48 @@
     :visible="visible"
     @close="closeDrawer"
   >
-    <p>
-      <a-textarea
-        :value="textarea"
-        width="50%"
-        placeholder="请输入备忘录文本"
-        rows="4"
-        @change="setTextArea"
-      />
-    </p>
-    <p style="text-align: right">
-      <a-button
-        type="primary"
-        :disabled="isAddToListButtonDisabled"
-        @click="addToList"
-      >
-        添加至列表
-      </a-button>
-    </p>
+    <div>
+      <a-collapse v-model="activeCollapseKey">
+        <a-collapse-panel
+          key="1"
+          header="添加新记录"
+        >
+          <p>
+            <a-textarea
+              :value="textarea"
+              width="50%"
+              placeholder="请输入备忘录文本"
+              rows="4"
+              @change="setTextArea"
+            />
+          </p>
+          <p style="text-align: right">
+            <a-button
+              type="primary"
+              :disabled="isAddToListButtonDisabled"
+              @click="addToList"
+            >
+              添加至列表
+            </a-button>
+          </p>
+        </a-collapse-panel>
+        <a-collapse-panel
+          key="2"
+          :header="`搜索${searchText ? `: ${searchText}` : ''}`"
+          :disabled="false"
+        >
+          <a-input-search
+            v-model:value="searchBoxText"
+            placeholder="搜索备忘录或网址"
+            enter-button
+            @search="handleSearch"
+          />
+        </a-collapse-panel>
+      </a-collapse>
+    </div>
     <a-table
       :columns="columns"
-      :data-source="tableData"
+      :data-source="filteredTableData"
       row-key="id"
       :locale="{
         emptyText:'无数据,请添加至列表'
@@ -72,7 +93,11 @@ import {
   jiraIdText,
   goToDetail,
   isAddToListButtonDisabled,
-  drawerTitle
+  drawerTitle,
+  searchBoxText,
+  searchText,
+  handleSearch,
+  filteredTableData
 } from './index'
 import DetailDrawer from './DetailDrawer.vue'
 import { LinkOutlined } from '@ant-design/icons-vue'

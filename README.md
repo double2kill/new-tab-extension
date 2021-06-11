@@ -31,6 +31,7 @@ Step 3: load unpacked and choose root dir (parent dir of manifest.json)
 
 # History
 
+* 2021-06-11 15:33:03 增加搜索🔍功能
 * 2021-04-16 16:32:04 开放 matchURL 至所有站点
 * 2021-04-02 16:16:10 当主面板拖到屏幕外面时，可以缩小，增加拖拽检测区域。
 * 2021-03-26 10:06:33 限制拖拽不能移除屏幕区域外部

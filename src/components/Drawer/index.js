@@ -1,4 +1,4 @@
-import {ref, computed} from 'vue'
+import {ref, computed, reactive} from 'vue'
 import {globalStorage} from '../../utils/chromeStorage'
 import linkifyHtml from 'linkifyjs/html'
 import {getjiraIdText} from '../jira'
@@ -84,3 +84,22 @@ export const goToDetail = (id) => {
   detailInfo.value = tableData.value.find(item => item.id === id)
   showDetailDrawer()
 }
+
+export const activeCollapseKey = reactive([])
+
+export const searchText = ref('')
+
+export const searchBoxText = ref('')
+
+export const handleSearch = () => {
+  searchText.value = searchBoxText.value
+}
+
+export const filteredTableData = computed(() => {
+  if (searchText.value === '') {
+    return tableData.value
+  }
+  return tableData.value.filter(({text, href}) => {
+    return text && text.includes(searchText.value) || href && href.includes(searchText.value)
+  })
+})
