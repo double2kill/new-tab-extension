@@ -2,8 +2,8 @@ import {storageGet} from './chromeStorage'
 
 let config = {}
 export const setInitialConfigFromStorage = async () => {
-  const jiraPosition = await storageGet('JIRA_POSITION')
-  config['JIRA_POSITION'] = jiraPosition
+  config['JIRA_POSITION'] = await storageGet('JIRA_POSITION')
+  config['LOCALHOST_ORIGIN'] = await storageGet('LOCALHOST_ORIGIN')
 }
 
 export const getInitialConfig = (key) => {
@@ -11,3 +11,4 @@ export const getInitialConfig = (key) => {
 }
 
 export const isDev = document.getElementById('is-dev')
+export const isExtensionEnv = window.chrome && window.chrome.storage

@@ -24,5 +24,13 @@ export default defineConfig({
         javascriptEnabled: true
       }
     }
-  }
+  },
+  server: {
+    proxy: {
+      '^/api': {
+        target: 'https://i18n.lab.nordigy.ru',
+        changeOrigin: true,
+      }
+    }
+  },
 })

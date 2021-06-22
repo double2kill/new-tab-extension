@@ -1,4 +1,5 @@
 import Localstorage from 'localstorage'
+import { isExtensionEnv } from './configs'
 export const JIRA_POSITION = 'JIRA_POSITION'
 export const JIRA = 'JIRA'
 export const GLOBAL = 'GLOBAL'
@@ -8,14 +9,18 @@ export const jiraLocalStorage = new Localstorage(JIRA)
 
 const mockStorage = {
   set (key, value) {
-    window.localStorage.setItem(key, JSON.stringify(value))
+    value = typeof value === 'object' ? JSON.stringify(value) : value
+    window.localStorage.setItem(key, value)
   },
   async get (key) {
-    return JSON.parse(window.localStorage.getItem(key))
+    const result = window.localStorage.getItem(key)
+    try {
+      return JSON.parse(result)
+    } catch (error) {
+      return result
+    }
   }
 }
-
-const isExtensionEnv = window.chrome && window.chrome.storage
 
 export const storageSet = (key, value) => {
   if (isExtensionEnv) {

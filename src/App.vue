@@ -31,6 +31,7 @@
       </template>
       <CopyJiraButton />
       <DrawerButton />
+      <GoToLocalHostButton v-if="!!currentGoToLocalhostUrl" />
     </a-card>
   </div>
 </template>
@@ -40,6 +41,7 @@ import { onMounted } from 'vue'
 import { DragOutlined } from '@ant-design/icons-vue'
 import CopyJiraButton from './components/CopyJiraButton.vue'
 import DrawerButton from './components/Drawer/DrawerButton.vue'
+import GoToLocalHostButton from './components/GoToLocalHostButton.vue'
 import {
   position,
   mainButtonRef,
@@ -47,25 +49,15 @@ import {
   onEnd,
   onStart,
   isHoverAtContainerWhenLeave,
-  addEventsToDocument
+  addEventsToDocument,
+  setJiraPosition,
+  currentGoToLocalhostUrl,
+  getCurrentGoToLocalhostUrl
 } from './App'
-import { getInitialConfig } from './utils/configs'
 
 onMounted(() => {
-  addEventsToDocument()
-  const positionValue = getInitialConfig('JIRA_POSITION')
-  if (positionValue) {
-    position.x = positionValue.x
-    position.y = positionValue.y
-    position.touchBorder = positionValue.touchBorder
-    return
-  }
-  const INITIAL_RIGHT = 50
-  const INITIAL_BOTTOM = 50
-  const { innerWidth, innerHeight } = window
-  const { width, height } = mainButtonRef.value.getBoundingClientRect()
-  position.x = innerWidth - width - INITIAL_RIGHT
-  position.y = innerHeight - height - INITIAL_BOTTOM
+  setJiraPosition()
+  getCurrentGoToLocalhostUrl(window.location.origin)
 })
 </script>
 

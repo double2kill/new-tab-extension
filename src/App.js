@@ -1,5 +1,7 @@
-import {reactive, ref} from 'vue'
+import { reactive, ref } from 'vue'
 import { storageSet} from './utils/chromeStorage'
+import { getCurrentEnvApiUrl } from './components/jira'
+import { getInitialConfig } from './utils/configs'
 
 export const position = reactive({ x: 0, y: 0, touchBorder: 'none', dragging: false})
 export const mainButtonRef = ref(null)
@@ -98,4 +100,27 @@ export const addEventsToDocument = () => {
   document.addEventListener('mouseenter', () => {
     isHoverAtContainerWhenLeave.value = false
   })
+}
+
+export const setJiraPosition = () => {
+  addEventsToDocument()
+  const positionValue = getInitialConfig('JIRA_POSITION')
+  if (positionValue) {
+    position.x = positionValue.x
+    position.y = positionValue.y
+    position.touchBorder = positionValue.touchBorder
+    return
+  }
+  const INITIAL_RIGHT = 50
+  const INITIAL_BOTTOM = 50
+  const { innerWidth, innerHeight } = window
+  const { width, height } = mainButtonRef.value.getBoundingClientRect()
+  position.x = innerWidth - width - INITIAL_RIGHT
+  position.y = innerHeight - height - INITIAL_BOTTOM
+}
+
+export const currentGoToLocalhostUrl = ref('')
+
+export const getCurrentGoToLocalhostUrl = async (currentOrigin) => {
+  currentGoToLocalhostUrl.value = await getCurrentEnvApiUrl(currentOrigin)
 }
