@@ -40,20 +40,34 @@ export const copyCommitInfo = () => {
     })
     throw new Error()
   }
-  copyText(commitText, undefined, (error, event) => {
-    if (error) {
-      notification.error({
-        message: '复制失败',
-        duration: 1.5,
-      })
-    } else {
-      notification.success({
-        message: '复制成功',
-        description: commitText,
-        duration: 1.5,
-      })
-    }
+  var handleCopyEvent = (event) => {
+    event.clipboardData.setData('text/plain', commitText)
+    event.clipboardData.setData('text/html', `<a href="https://jira.ringcentral.com/browse/${jiraIdText}">${jiraIdText}</a> ${jiraTitleText}`)
+    event.preventDefault()
+  }
+  window.addEventListener('copy', handleCopyEvent)
+  document.execCommand('Copy', false, null)
+  notification.success({
+    message: '复制成功',
+    description: commitText,
+    duration: 1.5,
   })
+  window.removeEventListener('copy', handleCopyEvent)
+
+  // copyText(commitText, undefined, (error, event) => {
+  //   if (error) {
+  //     notification.error({
+  //       message: '复制失败',
+  //       duration: 1.5,
+  //     })
+  //   } else {
+  //     notification.success({
+  //       message: '复制成功',
+  //       description: commitText,
+  //       duration: 1.5,
+  //     })
+  //   }
+  // })
 }
 
 export const loginToLocalhost = () => {

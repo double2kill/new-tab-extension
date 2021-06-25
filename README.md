@@ -31,6 +31,7 @@ Step 3: load unpacked and choose root dir (parent dir of manifest.json)
 
 # History
 
+* 2021-06-25 14:10:43 copy commit message 修改为 copy 时 jiraId 带上 link
 * 2021-06-22 15:20:05 增加登录到 localhost 功能
 * 2021-06-11 15:33:03 增加搜索🔍功能
 * 2021-04-16 16:32:04 开放 matchURL 至所有站点
