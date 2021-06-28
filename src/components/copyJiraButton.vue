@@ -9,9 +9,15 @@
     type="primary"
     @click="copyCommitInfo(true)"
   >
-    复制含 Fix Version 信息
+    复制含 Release 的信息
   </a-button>
 </template>
 <script setup>
 import {copyCommitInfo} from './jira'
 </script>
+
+<style>
+#chrome-copy-jira-inner button+button {
+  margin-left: 10px;
+}
+</style>
