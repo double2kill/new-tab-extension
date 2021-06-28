@@ -1,4 +1,4 @@
-import {ref, computed, reactive} from 'vue'
+import {ref, computed, reactive, watch} from 'vue'
 import {globalStorage} from '../../utils/chromeStorage'
 import linkifyHtml from 'linkifyjs/html'
 import {getjiraIdText} from '../jira'
@@ -102,4 +102,11 @@ export const filteredTableData = computed(() => {
   return tableData.value.filter(({text, href}) => {
     return text && text.includes(searchText.value) || href && href.includes(searchText.value)
   })
+})
+
+watch(drawerVisible, (current, previous) => {
+  if (current === true) {
+    searchBoxText.value = ''
+    searchText.value = ''
+  }
 })
