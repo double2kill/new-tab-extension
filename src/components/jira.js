@@ -1,5 +1,4 @@
 import { notification } from 'ant-design-vue'
-import { copyText } from 'vue3-clipboard'
 import { isDev } from '../utils/configs'
 import { fetch } from '../utils/functions'
 import { currentGoToLocalhostUrl } from '../App.js'
@@ -25,14 +24,31 @@ export const getCurrentEnvApiUrl = async (currentOrigin) => {
   return currentEnvGroup.apiUrl
 }
 
-export const copyCommitInfo = () => {
-  const jiraTitleElement = document.querySelector('#issue-content h1#summary-val')
+export const getCommitText = ({jiraIdText, jiraTitleText, fixVersionNumber}, withFixVersion = false) => {
+  if (withFixVersion) {
+    return {
+      plainText: `${jiraIdText} ${jiraTitleText}(${fixVersionNumber})`,
+      htmlText: `<a href="https://jira.ringcentral.com/browse/${jiraIdText}">${jiraIdText}</a> ${jiraTitleText}(${fixVersionNumber})`
+    }
+  }
+  return {
+    plainText: `${jiraIdText} ${jiraTitleText}`,
+    htmlText: `<a href="https://jira.ringcentral.com/browse/${jiraIdText}">${jiraIdText}</a> ${jiraTitleText}`
+  }
+}
 
+export const copyCommitInfo = (withFixVersion = false) => {
   const jiraIdText = getjiraIdText()
+
+  const jiraTitleElement = document.querySelector('#issue-content h1#summary-val')
   const jiraTitleText = jiraTitleElement && jiraTitleElement.innerText
 
-  const commitText = `${jiraIdText} ${jiraTitleText}`
-  if (commitText.includes('null')) {
+  const fixVersionElement = document.querySelector('#fixVersions-field')
+  const fixVersionNumber = fixVersionElement && fixVersionElement.innerText.replace(/[^\d.]/g,'')
+
+  const {plainText, htmlText} = getCommitText({jiraIdText, jiraTitleText, fixVersionNumber}, withFixVersion)
+
+  if (plainText.includes('null')) {
     notification.error({
       message: '复制失败',
       description: '没有找到元素',
@@ -41,33 +57,18 @@ export const copyCommitInfo = () => {
     throw new Error()
   }
   var handleCopyEvent = (event) => {
-    event.clipboardData.setData('text/plain', commitText)
-    event.clipboardData.setData('text/html', `<a href="https://jira.ringcentral.com/browse/${jiraIdText}">${jiraIdText}</a> ${jiraTitleText}`)
+    event.clipboardData.setData('text/plain', plainText)
+    event.clipboardData.setData('text/html', htmlText)
     event.preventDefault()
   }
   window.addEventListener('copy', handleCopyEvent)
   document.execCommand('Copy', false, null)
   notification.success({
     message: '复制成功',
-    description: commitText,
+    description: plainText,
     duration: 1.5,
   })
   window.removeEventListener('copy', handleCopyEvent)
-
-  // copyText(commitText, undefined, (error, event) => {
-  //   if (error) {
-  //     notification.error({
-  //       message: '复制失败',
-  //       duration: 1.5,
-  //     })
-  //   } else {
-  //     notification.success({
-  //       message: '复制成功',
-  //       description: commitText,
-  //       duration: 1.5,
-  //     })
-  //   }
-  // })
 }
 
 export const loginToLocalhost = () => {
