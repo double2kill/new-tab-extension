@@ -1,21 +1,21 @@
 # Copy-Jira-Commit
 
-# Usage
+# 使用(开发)
 ```
 $ yarn
 $ yarn dev
 $ yarn build
 ```
 
-# How to install
+# 如何安装
 
-Step 1: download or git clone
+步骤 1: `git clone` 或者 `Download`
 
-Step 2: open chrome://extensions/
+步骤 2: 打开 `chrome://extensions/`
 
-Step 3: load unpacked and choose root dir (parent dir of manifest.json)
+步骤 3: `load unpacked` 然后选择根目录 (`manifest.json`的父级)
 
-# Tree
+# 文件目录
 ```
 |-- index.html   定义 dev 环境使用的html,可以用于本地造一些页面数据进行测试
 |-- manifest.json   定义插件的 manifest,指定 build/main.js
@@ -29,7 +29,7 @@ Step 3: load unpacked and choose root dir (parent dir of manifest.json)
 # TODO
 * 需要注意防止 xss 攻击
 
-# History
+# 更新历史
 
 * 2021-06-28 13:42:36 新增编辑详情的功能
 * 2021-06-28 08:32:54 新增复制含 Fix Version 信息
