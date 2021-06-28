@@ -110,3 +110,33 @@ watch(drawerVisible, (current, previous) => {
     searchText.value = ''
   }
 })
+
+export const detailMode = ref('detail')
+
+export const detailPageTextarea = ref('')
+
+export const setDetailPageTextarea = (event) => {
+  detailPageTextarea.value = event.target.value
+}
+
+export const switchDetailModeToEditStatus = () => {
+  detailMode.value = 'edit'
+}
+
+export const isDetailModeEditStatus = computed(() => {
+  return detailMode.value === 'edit'
+})
+
+export const saveDetailInfo = async () => {
+  detailInfo.value.text = detailPageTextarea.value
+  detailMode.value = 'detail'
+  await globalStorage.edit(jiraIdText.value, detailInfo.value.id, {...detailInfo.value, updateTime: new Date().valueOf()})
+  await getTableDataFromLocalStorage()
+}
+
+watch(detailDrawerVisible, (current, previous) => {
+  if (current === true) {
+    detailMode.value = 'detail'
+    detailPageTextarea.value = detailInfo.value.text
+  }
+})

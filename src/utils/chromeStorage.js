@@ -66,6 +66,13 @@ export class ChromeStorageList {
     const newList = list.filter(item => item.id !== id)
     storageSet(storageKey, newList)
   }
+  async edit (key, id, value) {
+    const storageKey = `${this.namespace}|${key}`
+    const list = await this.get(key)
+    const targetIndex = list.findIndex(item => item.id === id)
+    list[targetIndex] = value
+    storageSet(storageKey, list)
+  }
 }
 
 export const globalStorage = new ChromeStorageList(GLOBAL)
