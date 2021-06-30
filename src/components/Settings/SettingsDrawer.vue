@@ -17,7 +17,6 @@
       />
       <a-button
         type="primary"
-        :disabled="isAddToListButtonDisabled"
         @click="setLocalhostOrigin"
       >
         设置

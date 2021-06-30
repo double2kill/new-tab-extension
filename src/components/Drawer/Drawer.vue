@@ -97,7 +97,8 @@ import {
   searchBoxText,
   searchText,
   handleSearch,
-  filteredTableData
+  filteredTableData,
+  activeCollapseKey
 } from './index'
 import DetailDrawer from './DetailDrawer.vue'
 import { LinkOutlined } from '@ant-design/icons-vue'

@@ -95,10 +95,14 @@ export const addEventsToDocument = () => {
       isHoverAtContainerWhenLeave.value = true
       return
     }
+  }, {
+    passive: true
   })
 
   document.addEventListener('mouseenter', () => {
     isHoverAtContainerWhenLeave.value = false
+  }, {
+    passive: true
   })
 }
 
