@@ -41,23 +41,37 @@ const checkTouchWindowBorder = () => {
   position.touchBorder = 'none'
 }
 
-const adjustPositionInWindow = () => {
+const adjustPositionInWindowWhenResizing = () => {
+  const { touchBorder } = position
+  if (touchBorder === 'none' || touchBorder === 'left' || touchBorder === 'top') {
+    return
+  }
   const {maxX, maxY} = getMaxInfo()
-  // move to top of window
-  position.y = Math.max(position.y, 0)
+  if (touchBorder === 'bottom') {
+    position.y = maxY
+  }
+  if (touchBorder === 'right') {
+    position.x = maxX
+  }
+}
+
+const adjustPositionInWindowToBorder = () => {
+  const {maxX, maxY} = getMaxInfo()
   // move to right of window
   position.x = Math.min(position.x, maxX)
   // move to bottom of window
   position.y = Math.min(position.y, maxY)
   // move to left of window
   position.x = Math.max(position.x, 0)
+  // move to top of window
+  position.y = Math.max(position.y, 0)
 }
 
 export const onMove = (event) => {
   position.dragging = true
   position.y = event.clientY - diffY
   position.x = event.clientX - diffX
-  adjustPositionInWindow()
+  adjustPositionInWindowToBorder()
 }
 
 export const onEnd = (event) => {
@@ -78,7 +92,7 @@ export const onStart = (event) => {
 }
 
 export const addEventsToDocument = () => {
-  document.addEventListener('mouseleave', (event) => {
+  window.addEventListener('mouseleave', (event) => {
     // 当鼠标移出窗口时，hover不会触发，所以需要多一个状态来标记 Hover .
     const {clientX, clientY} = event
     const {width, height} = mainButtonRef.value.getBoundingClientRect()
@@ -99,8 +113,15 @@ export const addEventsToDocument = () => {
     passive: true
   })
 
-  document.addEventListener('mouseenter', () => {
+  window.addEventListener('mouseenter', () => {
     isHoverAtContainerWhenLeave.value = false
+  }, {
+    passive: true
+  })
+
+  window.addEventListener('resize', () => {
+    adjustPositionInWindowWhenResizing()
+    adjustPositionInWindowToBorder()
   }, {
     passive: true
   })

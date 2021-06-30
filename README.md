@@ -31,6 +31,7 @@ $ yarn build
 
 # 更新历史
 
+* 2021-06-30 17:31:29 支持 resize 处理，现在 panel 不会跑出屏幕外面了
 * 2021-06-28 13:42:36 新增编辑详情的功能
 * 2021-06-28 08:32:54 新增复制含 Fix Version 信息
 * 2021-06-25 14:10:43 copy commit message 修改为 copy 时 jiraId 带上 link
