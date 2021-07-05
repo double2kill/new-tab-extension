@@ -92,7 +92,7 @@ export const onStart = (event) => {
 }
 
 export const addEventsToDocument = () => {
-  window.addEventListener('mouseleave', (event) => {
+  document.addEventListener('mouseleave', (event) => {
     // 当鼠标移出窗口时，hover不会触发，所以需要多一个状态来标记 Hover .
     const {clientX, clientY} = event
     const {width, height} = mainButtonRef.value.getBoundingClientRect()
@@ -113,7 +113,7 @@ export const addEventsToDocument = () => {
     passive: true
   })
 
-  window.addEventListener('mouseenter', () => {
+  document.addEventListener('mouseenter', () => {
     isHoverAtContainerWhenLeave.value = false
   }, {
     passive: true
