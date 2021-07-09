@@ -1,5 +1,5 @@
 import { reactive, ref } from 'vue'
-import { storageSet} from './utils/chromeStorage'
+import { storageSet } from './utils/chromeStorage'
 import { getCurrentEnvApiUrl } from './components/jira'
 import { getInitialConfig } from './utils/configs'
 
@@ -122,6 +122,7 @@ export const addEventsToDocument = () => {
   window.addEventListener('resize', () => {
     adjustPositionInWindowWhenResizing()
     adjustPositionInWindowToBorder()
+    storageSet('JIRA_POSITION', position)
   }, {
     passive: true
   })
