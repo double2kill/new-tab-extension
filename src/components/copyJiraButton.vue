@@ -11,9 +11,15 @@
   >
     复制含 Release 的信息
   </a-button>
+  <a-button
+    type="primary"
+    @click="copySWEntry"
+  >
+    复制 Service Web 入口
+  </a-button>
 </template>
 <script setup>
-import {copyCommitInfo} from './jira'
+import {copyCommitInfo, copySWEntry} from './jira'
 </script>
 
 <style>

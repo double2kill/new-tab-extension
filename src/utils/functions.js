@@ -1,4 +1,6 @@
 import { isExtensionEnv } from './configs'
+import { notification } from 'ant-design-vue'
+
 export function fetch (url) {
   if (!isExtensionEnv) {
     if (url.includes('/api')) {
@@ -14,4 +16,19 @@ export function fetch (url) {
       resolve(data)
     })
   })
+}
+export function copyTextToClipboard ({plainText, htmlText=plainText}) {
+  const handleCopyEvent = (event) => {
+    event.clipboardData.setData('text/plain', plainText)
+    event.clipboardData.setData('text/html', htmlText)
+    event.preventDefault()
+  }
+  window.addEventListener('copy', handleCopyEvent)
+  document.execCommand('Copy', false, null)
+  notification.success({
+    message: '复制成功',
+    description: plainText,
+    duration: 1.5,
+  })
+  window.removeEventListener('copy', handleCopyEvent)
 }

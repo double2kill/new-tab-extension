@@ -1,0 +1,8 @@
+{
+    "pathNameMapToEntryList": [
+        {
+            "pathname": "/application/admin/tools/teamsIntegration",
+            "entryName": "Admin Portal > More > Account Settings > Cloud PBX for Microsoft Teams"
+        }
+    ]
+}

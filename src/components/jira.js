@@ -1,6 +1,6 @@
 import { notification } from 'ant-design-vue'
 import { isDev } from '../utils/configs'
-import { fetch } from '../utils/functions'
+import { fetch, copyTextToClipboard } from '../utils/functions'
 import { currentGoToLocalhostUrl } from '../App.js'
 import { localhostOrigin } from './Settings/index'
 
@@ -54,21 +54,9 @@ export const copyCommitInfo = (withFixVersion = false) => {
       description: '没有找到元素',
       duration: 1.5,
     })
-    throw new Error()
+    return
   }
-  var handleCopyEvent = (event) => {
-    event.clipboardData.setData('text/plain', plainText)
-    event.clipboardData.setData('text/html', htmlText)
-    event.preventDefault()
-  }
-  window.addEventListener('copy', handleCopyEvent)
-  document.execCommand('Copy', false, null)
-  notification.success({
-    message: '复制成功',
-    description: plainText,
-    duration: 1.5,
-  })
-  window.removeEventListener('copy', handleCopyEvent)
+  copyTextToClipboard({plainText, htmlText})
 }
 
 export const loginToLocalhost = () => {
@@ -95,4 +83,29 @@ export const loginToLocalhost = () => {
       return `${key}=${encodeURIComponent(value)}`
     }).join('&')
   window.open(`https://i18n.lab.nordigy.ru/api/ags/loginViaOAuth?${query}`)
+}
+
+export const copySWEntry = async () => {
+  let pathNameMapToEntryList = []
+  try {
+    // TODO 设置一个缓存时间
+    const configs = await fetch('https://raw.githubusercontent.com/double2kill/copy-jira-commit/master/src/constants/configs.json')
+    pathNameMapToEntryList = configs.pathNameMapToEntryList
+  } catch (error) {
+    // No handler
+  }
+  const {pathname} = location
+  for (let item of pathNameMapToEntryList) {
+    if (item.pathname === pathname) {
+      copyTextToClipboard({
+        plainText: item.entryName
+      })
+      return
+    }
+  }
+  notification.error({
+    message: '复制失败',
+    description: '没有找到对应的入口',
+    duration: 1.5,
+  })
 }
