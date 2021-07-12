@@ -1,8 +1,10 @@
+import { h } from 'vue'
 import { notification } from 'ant-design-vue'
 import { isDev } from '../utils/configs'
 import { fetch, copyTextToClipboard } from '../utils/functions'
 import { currentGoToLocalhostUrl } from '../App.js'
 import { localhostOrigin } from './Settings/index'
+import NoEntryNotification from './Notification/NoEntry.vue'
 
 export const getjiraIdText = () => {
   const jiraIdElement = document.querySelector('#issue-content a#key-val')
@@ -105,7 +107,7 @@ export const copySWEntry = async () => {
   }
   notification.error({
     message: '复制失败',
-    description: '没有找到对应的入口',
-    duration: 1.5,
+    description: h(NoEntryNotification),
+    duration: null
   })
 }
