@@ -12,9 +12,9 @@ let diffY, diffX
 
 const getMaxInfo = () => {
   const {width, height} = mainButtonRef.value.getBoundingClientRect()
-  const { innerWidth, innerHeight } = window
-  const maxY = innerHeight - height
-  const maxX = innerWidth - width
+  const { clientWidth, clientHeight } = document.documentElement
+  const maxX = clientWidth - width
+  const maxY = clientHeight - height
   return {
     maxX, maxY
   }
@@ -139,10 +139,9 @@ export const setJiraPosition = () => {
   }
   const INITIAL_RIGHT = 50
   const INITIAL_BOTTOM = 50
-  const { innerWidth, innerHeight } = window
-  const { width, height } = mainButtonRef.value.getBoundingClientRect()
-  position.x = innerWidth - width - INITIAL_RIGHT
-  position.y = innerHeight - height - INITIAL_BOTTOM
+  const {maxX, maxY} = getMaxInfo()
+  position.x = maxX - INITIAL_RIGHT
+  position.y = maxY - INITIAL_BOTTOM
 }
 
 export const currentGoToLocalhostUrl = ref('')

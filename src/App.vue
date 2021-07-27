@@ -33,6 +33,16 @@
       <DrawerButton />
       <GoToLocalHostButton v-if="!!currentGoToLocalhostUrl" />
     </a-card>
+    <div
+      class="arrow"
+      :class="{
+        'arrow-top': position.touchBorder === 'bottom' && position.dragging === false,
+        'arrow-right': position.touchBorder === 'left' && position.dragging === false,
+        'arrow-bottom': position.touchBorder === 'top' && position.dragging === false,
+        'arrow-left': position.touchBorder === 'right' && position.dragging === false,
+        'arrow-hidden-hover-when-leave': isHoverAtContainerWhenLeave,
+      }"
+    />
   </div>
 </template>
 
@@ -93,16 +103,16 @@ onMounted(() => {
 }
 
 .touch-top {
-  transform: translateY(-95%);
+  transform: translateY(-96%);
 }
 .touch-right {
-  transform: translateX(95%);
+  transform: translateX(96%);
 }
 .touch-bottom {
-  transform: translateY(95%);
+  transform: translateY(96%);
 }
 .touch-left {
-  transform: translateX(-95%);
+  transform: translateX(-96%);
 }
 
 .draggble:hover {
@@ -114,6 +124,7 @@ onMounted(() => {
   transform: translateX(0%);
   transform: translateY(0%);
 }
+
 .ant-drawer,
 .ant-notification {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -127,4 +138,60 @@ onMounted(() => {
   font-family: inherit;
   font-size: 14px;
 }
+
+.arrow {
+  position: absolute;
+  content: '';
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
+.draggble:hover .arrow {
+  opacity: 0;
+}
+
+.arrow-hidden-hover-when-leave {
+  opacity: 0;
+}
+
+.arrow-top {
+  top: -18px;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 20px solid white;
+  filter: drop-shadow(0px -4px 2px rgb(0 0 0 / 9%));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.arrow-bottom {
+  bottom: -18px;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 20px solid white;
+  filter: drop-shadow(0px 4px 2px rgb(0 0 0 / 9%));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.arrow-left {
+  left: -18px;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-right: 20px solid white;
+  filter: drop-shadow(-4px 0px 2px rgb(0 0 0 / 9%));
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.arrow-right {
+  right: -18px;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-left: 20px solid white;
+  filter: drop-shadow(4px 0px 2px rgb(0 0 0 / 9%));
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 </style>
