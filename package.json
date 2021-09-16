@@ -1,24 +1,22 @@
 {
+  "name": "newtab",
+  "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vue-tsc --noEmit && vite build",
+    "build:skipCheck": "vite build",
     "serve": "vite preview"
   },
   "dependencies": {
-    "@ant-design/colors": "^6.0.0",
-    "@vitejs/plugin-vue": "^1.1.5",
-    "@vue/compiler-sfc": "^3.0.7",
-    "ant-design-vue": "^2.0.1",
-    "eslint": "^7.22.0",
-    "less": "^4.1.1",
-    "linkifyjs": "^3.0.0-beta.3",
-    "localstorage": "^1.0.1",
-    "vite": "^2.0.5",
-    "vue": "3.0.5",
-    "vue-draggable-next": "^2.0.1"
+    "ant-design-vue": "^2.2.7",
+    "dayjs": "^1.10.7",
+    "vue": "^3.2.6"
   },
   "devDependencies": {
-    "babel-plugin-import": "^1.13.3",
-    "eslint-plugin-vue": "^7.7.0"
+    "@vitejs/plugin-vue": "^1.6.1",
+    "@vue/compiler-sfc": "^3.2.6",
+    "typescript": "^4.3.2",
+    "vite": "^2.5.4",
+    "vue-tsc": "^0.2.2"
   }
 }
