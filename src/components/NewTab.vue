@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import FocusOn from './FocusOn.vue'
+import Time from './Time.vue'
 
 defineProps<{ msg: string }>();
 
@@ -17,6 +18,7 @@ const count = ref(0);
   <div class="app">
     <div class="top-row"></div>
     <div class="center-above">
+      <Time />
       <h1>Hello New Tab !</h1>
       <FocusOn />
     </div>
