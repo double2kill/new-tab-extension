@@ -1,39 +1,46 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import FocusOn from './FocusOn.vue'
 import Time from './Time.vue'
 import { NSwitch } from "naive-ui";
+import dayjs from "dayjs";
+import { useLocalStorageState } from "vue-hooks-plus";
 
-const waiTransform = ref(localStorage.getItem('new-tab.wai') !== 'disabled')
+const [waiTransform, setWaiTransform] = useLocalStorageState('new-tab.wai', {
+  defaultValue: true,
+})
+
 const bgImgSrc = ref(localStorage.getItem('new-tab.background-image'))
 onMounted(() => {
+  const today = dayjs().format('YYYY-MM-DD')
+  const fetchDate = localStorage.getItem('new-tab.fetch-background-image-date')
+  if(fetchDate === today && bgImgSrc.value) {
+    return
+  }
   fetch('https://api.timelessq.com/bing').then(data => {
     bgImgSrc.value = data.url
     localStorage.setItem('new-tab.background-image', bgImgSrc.value)
+    localStorage.setItem('new-tab.fetch-background-image-date', today)
   })
 })
 
 const handleChange = (value: boolean) => {
-  localStorage.setItem('new-tab.background-image', !value ? 'disabled': '')
+  setWaiTransform(value)
 }
 
 const getRandomInteger = (min: number, max: number) => {
-  // 确保min和max是整数
   min = Math.ceil(min);
   max = Math.floor(max);
-  // Math.floor(Math.random() * (max - min + 1)) + min 将生成一个[min, max]之间的随机整数
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 const randomDeg = ref(getRandomInteger(-90, 90))
 
-// const count = ref(0);
 </script>
 
 <template>
   <img v-if="bgImgSrc" class="background-item" :src="bgImgSrc" alt="Bing每日壁纸UHD超高清原图" />
   <div class="app">
-    <div class="center-above" :style="`transform: rotate(${randomDeg}deg)`">
+    <div class="center-above" :style="waiTransform ? `transform: rotate(${randomDeg}deg)`: ''">
       <Time />
       <!-- <h1>Hello New Tab !</h1> -->
       <!-- <FocusOn /> -->

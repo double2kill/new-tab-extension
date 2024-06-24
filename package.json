@@ -9,9 +9,10 @@
   },
   "dependencies": {
     "ant-design-vue": "^2.2.7",
-    "dayjs": "^1.10.7",
+    "dayjs": "^1.11.11",
     "naive-ui": "^2.38.2",
-    "vue": "^3.2.6"
+    "vue": "^3.2.6",
+    "vue-hooks-plus": "^2.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.6.1",
