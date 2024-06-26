@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import Time from './Time.vue'
-import { NSwitch } from "naive-ui";
+import { NButton, NSwitch } from "naive-ui";
 import dayjs from "dayjs";
 import { useLocalStorageState } from "vue-hooks-plus";
 
@@ -35,6 +35,13 @@ const getRandomInteger = (min: number, max: number) => {
 
 const randomDeg = ref(getRandomInteger(-90, 90))
 
+const handleRandom = () => {
+  fetch('https://api.timelessq.com/bing/random').then(data => {
+    bgImgSrc.value = data.url
+    localStorage.setItem('new-tab.background-image', bgImgSrc.value)
+  })
+}
+
 </script>
 
 <template>
@@ -48,13 +55,11 @@ const randomDeg = ref(getRandomInteger(-90, 90))
     <!-- <div class="center-below"></div>
     <div class="bottom-row"></div> -->
     <div class="settings">
+      <NButton @click="handleRandom" quaternary type="primary" color="white">
+        随机背景
+      </NButton>
       <NSwitch v-model:value="waiTransform" @update:value="handleChange">
-        <template #checked>
         歪脖子
-        </template>
-        <template #unchecked>
-        歪脖子
-        </template>
       </NSwitch>
     </div>
   </div>
@@ -103,6 +108,7 @@ const randomDeg = ref(getRandomInteger(-90, 90))
 
 .settings {
   display: flex;
+  flex-direction: column;
   position: absolute;
   bottom: 10px;
   right: 10px;
