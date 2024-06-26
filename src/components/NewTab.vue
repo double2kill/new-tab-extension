@@ -59,7 +59,12 @@ const handleRandom = () => {
         随机背景
       </NButton>
       <NSwitch v-model:value="waiTransform" @update:value="handleChange">
+        <template #checked>
         歪脖子
+        </template>
+        <template #unchecked>
+        歪脖子
+        </template>
       </NSwitch>
     </div>
   </div>
