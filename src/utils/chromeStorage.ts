@@ -1,48 +1,50 @@
 export const isExtensionEnv = window.chrome && window.chrome.storage
 export class ChromeStorageList {
-  constructor (namespace) {
+  namespace: string
+  
+  constructor (namespace: string) {
     this.namespace = namespace || ''
   }
   async get () {
     const result = await storageGet(this.namespace)
     return result || []
   }
-  async set (value) {
+  async set (value: any) {
     storageSet(this.namespace, value)
   }
-  async add (value) {
-    const list = await this.get(this.namespace)
+  async add (value: any) {
+    const list = await this.get()
     storageSet(this.namespace, [...list, value])
   }
-  async delete (id) {
-    const list = await this.get(this.namespace)
-    const newList = list.filter(item => item.id !== id)
+  async delete (id: string) {
+    const list = await this.get()
+    const newList = list.filter((item: any)=> item.id !== id)
     storageSet(this.namespace, newList)
   }
-  async edit (id, value) {
-    const list = await this.get(this.namespace)
-    const targetIndex = list.findIndex(item => item.id === id)
+  async edit (id: string, value: any) {
+    const list = await this.get()
+    const targetIndex = list.findIndex((item: any) => item.id === id)
     list[targetIndex] = value
     storageSet(this.namespace, list)
   }
 }
 
 const mockStorage = {
-  set (key, value) {
+  set (key: string, value: any) {
     value = typeof value === 'object' ? JSON.stringify(value) : value
     window.localStorage.setItem(key, value)
   },
-  async get (key) {
+  async get (key: string) {
     const result = window.localStorage.getItem(key)
     try {
-      return JSON.parse(result)
+      return JSON.parse(result as any)
     } catch (error) {
       return result
     }
   }
 }
 
-const storageSet = (key, value) => {
+const storageSet = (key: string, value: any) => {
   if (isExtensionEnv) {
     window.chrome.storage.local.set({[key]: value})
   } else {
@@ -50,7 +52,7 @@ const storageSet = (key, value) => {
   }
 }
 
-const storageGet = (key) => {
+const storageGet = (key: string) => {
   if (isExtensionEnv) {
     return new Promise((res) => {
       window.chrome.storage.local.get([key], (result) => {

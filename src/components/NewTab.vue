@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+// import Live2d from './Live2d.vue'
+import dayjs from 'dayjs'
+import { NButton, NSwitch } from 'naive-ui'
+import { onMounted, ref } from 'vue'
+import { useLocalStorageState } from 'vue-hooks-plus'
+import Vue3Live2d from 'vue3-live2d'
+
 import Time from './Time.vue'
-import { NButton, NSwitch } from "naive-ui";
-import dayjs from "dayjs";
-import { useLocalStorageState } from "vue-hooks-plus";
 
 const [waiTransform, setWaiTransform] = useLocalStorageState('new-tab.wai', {
-  defaultValue: true,
+  defaultValue: true
 })
 
 const bgImgSrc = ref(localStorage.getItem('new-tab.background-image'))
 onMounted(() => {
   const today = dayjs().format('YYYY-MM-DD')
   const fetchDate = localStorage.getItem('new-tab.fetch-background-image-date')
-  if(fetchDate === today && bgImgSrc.value) {
+  if (fetchDate === today && bgImgSrc.value) {
     return
   }
-  fetch('https://api.timelessq.com/bing').then(data => {
+  fetch('https://api.timelessq.com/bing').then((data) => {
     bgImgSrc.value = data.url
     localStorage.setItem('new-tab.background-image', bgImgSrc.value)
     localStorage.setItem('new-tab.fetch-background-image-date', today)
@@ -28,26 +31,34 @@ const handleChange = (value: boolean) => {
 }
 
 const getRandomInteger = (min: number, max: number) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 const randomDeg = ref(getRandomInteger(-90, 90))
 
 const handleRandom = () => {
-  fetch('https://api.timelessq.com/bing/random').then(data => {
+  fetch('https://api.timelessq.com/bing/random').then((data) => {
     bgImgSrc.value = data.url
     localStorage.setItem('new-tab.background-image', bgImgSrc.value)
   })
 }
 
+let tips = ref({
+  mouseover: [
+    {
+      selector: '.vue3-live2d',
+      texts: ['请查看源代码了解如何修改默认语句']
+    }
+  ]
+})
 </script>
 
 <template>
   <img v-if="bgImgSrc" class="background-item" :src="bgImgSrc" alt="Bing每日壁纸UHD超高清原图" />
   <div class="app">
-    <div class="center-above" :style="waiTransform ? `transform: rotate(${randomDeg}deg)`: ''">
+    <div class="center-above" :style="waiTransform ? `transform: rotate(${randomDeg}deg)` : ''">
       <Time />
       <!-- <h1>Hello New Tab !</h1> -->
       <!-- <FocusOn /> -->
@@ -55,18 +66,27 @@ const handleRandom = () => {
     <!-- <div class="center-below"></div>
     <div class="bottom-row"></div> -->
     <div class="settings">
-      <NButton @click="handleRandom" quaternary type="primary" color="white">
-        随机背景
-      </NButton>
+      <NButton @click="handleRandom" quaternary type="primary" color="white"> 随机背景 </NButton>
       <NSwitch v-model:value="waiTransform" @update:value="handleChange">
-        <template #checked>
-        歪脖子
-        </template>
-        <template #unchecked>
-        歪脖子
-        </template>
+        <template #checked> 歪脖子 </template>
+        <template #unchecked> 歪脖子 </template>
       </NSwitch>
     </div>
+    <Vue3Live2d
+      class="live2d"
+      :width="300"
+      :height="300"
+      :resolution="2"
+      :style="{ position: 'fixed', bottom: 0, right: 0, zIndex: 1 }"
+      :api-path="'https://evgo2017.com/api/live2d-static-api/indexes'"
+      :model="['Potion-Maker/Pio', 'school-2017-costume-yellow']"
+    />
+    <!-- <Live2d
+        :style="'position: fixed; bottom: 0; right: 0;'"
+        :model="['Potion-Maker/Pio', 'school-2017-costume-yellow']"
+        direction="right"
+        :size="200"
+      /> -->
   </div>
 </template>
 
@@ -87,11 +107,17 @@ const handleRandom = () => {
   bottom: 0;
   top: 0;
   color: white;
-  font-family: Hiragino Sans GB, Microsoft YaHei, WenQuanYi Micro Hei, sans-serif;;
+  font-family:
+    Hiragino Sans GB,
+    Microsoft YaHei,
+    WenQuanYi Micro Hei,
+    sans-serif;
   display: flex;
   flex-direction: column;
   transition: opacity 0.3s var(--a-curve);
-  text-shadow: 0 0 8px #666, 0 0 2px #666
+  text-shadow:
+    0 0 8px #666,
+    0 0 2px #666;
 }
 .center-above,
 .center-below {
@@ -115,8 +141,7 @@ const handleRandom = () => {
   display: flex;
   flex-direction: column;
   position: absolute;
-  bottom: 10px;
-  right: 10px;
+  bottom: 20px;
+  left: 20px;
 }
-
 </style>

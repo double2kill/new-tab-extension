@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
-import {
-  focusOnTodayText,
-  fetchFocusOnToday,
-  setFocusOnToday,
-} from "./newTab.ts";
+import { onMounted } from 'vue'
+
+import { focusOnTodayText, fetchFocusOnToday, setFocusOnToday } from './newTab'
 onMounted(() => {
-  fetchFocusOnToday();
-});
+  fetchFocusOnToday()
+})
 </script>
 
 <template>
@@ -29,7 +26,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
 .focus-on {
   font-weight: bold;
 }
@@ -71,5 +67,4 @@ onMounted(() => {
   outline: none;
   box-shadow: none;
 }
-
 </style>
