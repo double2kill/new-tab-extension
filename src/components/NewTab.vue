@@ -1,19 +1,42 @@
 <script setup lang="ts">
 // import Live2d from './Live2d.vue'
+import { Button, Slider } from 'ant-design-vue'
 import dayjs from 'dayjs'
-import { NButton, NSwitch } from 'naive-ui'
-import { onMounted, ref } from 'vue'
+import { NButton, NSlider, NSwitch } from 'naive-ui'
+import { computed, onMounted, ref } from 'vue'
 import { useLocalStorageState } from 'vue-hooks-plus'
 import Vue3Live2d from 'vue3-live2d'
 
 import Time from './Time.vue'
 
-const [waiTransform, setWaiTransform] = useLocalStorageState('new-tab.wai', {
-  defaultValue: true
+const MIN = -180
+const MAX = 180
+
+const getRandomInteger = (min: number, max: number) => {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+const randomDeg = ref()
+
+const handleSetDeg = () => {
+  localStorage.setItem('new-tab.wai.deg', randomDeg.value.toString())
+}
+
+const [waiMode, setWaiMode] = useLocalStorageState('new-tab.wai.mode', {
+  defaultValue: 'random'
+})
+
+const isWaiFixed = computed(() => {
+  return waiMode.value === 'fixed'
 })
 
 const bgImgSrc = ref(localStorage.getItem('new-tab.background-image'))
 onMounted(() => {
+  randomDeg.value = localStorage.getItem('new-tab.wai.deg')
+    ? parseInt(localStorage.getItem('new-tab.wai.deg') as string)
+    : getRandomInteger(MIN, MAX)
   const today = dayjs().format('YYYY-MM-DD')
   const fetchDate = localStorage.getItem('new-tab.fetch-background-image-date')
   if (fetchDate === today && bgImgSrc.value) {
@@ -27,16 +50,15 @@ onMounted(() => {
 })
 
 const handleChange = (value: boolean) => {
-  setWaiTransform(value)
+  if (value) {
+    setWaiMode('fixed')
+    localStorage.setItem('new-tab.wai.deg', randomDeg.value.toString())
+    return
+  }
+  setWaiMode('random')
+  localStorage.removeItem('new-tab.wai.deg')
+  randomDeg.value = getRandomInteger(MIN, MAX)
 }
-
-const getRandomInteger = (min: number, max: number) => {
-  min = Math.ceil(min)
-  max = Math.floor(max)
-  return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
-const randomDeg = ref(getRandomInteger(-90, 90))
 
 const handleRandom = () => {
   fetch('https://api.timelessq.com/bing/random').then((data) => {
@@ -58,19 +80,28 @@ let tips = ref({
 <template>
   <img v-if="bgImgSrc" class="background-item" :src="bgImgSrc" alt="Bing每日壁纸UHD超高清原图" />
   <div class="app">
-    <div class="center-above" :style="waiTransform ? `transform: rotate(${randomDeg}deg)` : ''">
+    <div class="center-above" :style="`transform: rotate(${-randomDeg}deg)`">
       <Time />
       <!-- <h1>Hello New Tab !</h1> -->
       <!-- <FocusOn /> -->
     </div>
+    <div style="width: 600px; margin: 0 auto; margin-bottom: 10px">
+      <NSwitch v-model:value="isWaiFixed" @update:value="handleChange" style="margin-bottom: 10px">
+        <template #checked> 固定角度</template>
+        <template #unchecked> 随机角度 </template>
+      </NSwitch>
+      <NSlider
+        v-if="isWaiFixed"
+        v-model:value="randomDeg"
+        :min="MIN"
+        :max="MAX"
+        @update:value="handleSetDeg"
+      />
+    </div>
     <!-- <div class="center-below"></div>
     <div class="bottom-row"></div> -->
     <div class="settings">
-      <NButton @click="handleRandom" quaternary type="primary" color="white"> 随机背景 </NButton>
-      <NSwitch v-model:value="waiTransform" @update:value="handleChange">
-        <template #checked> 歪脖子 </template>
-        <template #unchecked> 歪脖子 </template>
-      </NSwitch>
+      <NButton @click="handleRandom" round type="primary"> 切换背景 </NButton>
     </div>
     <Vue3Live2d
       class="live2d"
