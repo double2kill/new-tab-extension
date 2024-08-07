@@ -1,14 +1,28 @@
 <script setup lang="ts">
 // import Live2d from './Live2d.vue'
-import { Button, Slider } from 'ant-design-vue'
+import { HeartOutline, ReloadOutline } from '@vicons/ionicons5'
 import dayjs from 'dayjs'
-import { NButton, NSlider, NSwitch } from 'naive-ui'
+import {
+  NButton,
+  NCard,
+  NDrawer,
+  NDrawerContent,
+  NIcon,
+  NSlider,
+  NSpace,
+  NSwitch,
+  NTooltip
+} from 'naive-ui'
 import { computed, onMounted, ref } from 'vue'
 import { useLocalStorageState } from 'vue-hooks-plus'
 import Vue3Live2d from 'vue3-live2d'
 
 import Time from './Time.vue'
 
+const [list, setList] = useLocalStorageState('new-tab.list', {
+  defaultValue: []
+})
+const active = ref(false)
 const MIN = -180
 const MAX = 180
 
@@ -66,6 +80,13 @@ const handleRandom = () => {
     localStorage.setItem('new-tab.background-image', bgImgSrc.value)
   })
 }
+const handleLike = () => {
+  const likeList = [...list.value]
+  if (!likeList.includes(bgImgSrc.value)) {
+    likeList.push(bgImgSrc.value)
+  }
+  setList(likeList)
+}
 
 let tips = ref({
   mouseover: [
@@ -75,6 +96,15 @@ let tips = ref({
     }
   ]
 })
+
+const handleShowDrawer = () => {
+  active.value = true
+}
+
+const handleSelect = (link: string) => {
+  bgImgSrc.value = link
+  localStorage.setItem('new-tab.background-image', bgImgSrc.value)
+}
 </script>
 
 <template>
@@ -101,7 +131,38 @@ let tips = ref({
     <!-- <div class="center-below"></div>
     <div class="bottom-row"></div> -->
     <div class="settings">
-      <NButton @click="handleRandom" round type="primary"> 切换背景 </NButton>
+      <NSpace>
+        <NButton round type="primary" @click="handleShowDrawer"> 收藏列表 </NButton>
+        <NTooltip trigger="hover">
+          <template #trigger>
+            <NButton quaternary circle type="success" @click="handleLike">
+              <template #icon>
+                <NIcon size="30"> <HeartOutline /></NIcon>
+              </template>
+            </NButton>
+          </template>
+          喜欢
+        </NTooltip>
+        <NTooltip trigger="hover">
+          <template #trigger>
+            <NButton quaternary circle type="success" @click="handleRandom">
+              <template #icon>
+                <NIcon size="30"> <ReloadOutline /></NIcon>
+              </template>
+            </NButton>
+          </template>
+          随机背景
+        </NTooltip>
+      </NSpace>
+      <NDrawer v-model:show="active" :default-width="400" placement="left" resizable>
+        <NDrawerContent title="收藏列表">
+          <NCard v-for="(item, index) in list" :key="index" hoverable>
+            <template #cover>
+              <img @click="handleSelect(item)" height="200" :src="item" style="cursor: pointer" />
+            </template>
+          </NCard>
+        </NDrawerContent>
+      </NDrawer>
     </div>
     <Vue3Live2d
       class="live2d"
