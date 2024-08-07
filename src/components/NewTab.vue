@@ -141,7 +141,7 @@ const handleSelect = (link: string) => {
               </template>
             </NButton>
           </template>
-          喜欢
+          喜欢此背景
         </NTooltip>
         <NTooltip trigger="hover">
           <template #trigger>
