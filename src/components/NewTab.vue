@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // import Live2d from './Live2d.vue'
-import { Heart, HeartOutline, ReloadOutline } from '@vicons/ionicons5'
+import { Heart, HeartOutline, ReloadOutline, TrashOutline } from '@vicons/ionicons5'
 import dayjs from 'dayjs'
 import {
   NButton,
@@ -80,11 +80,20 @@ const handleRandom = () => {
     localStorage.setItem('new-tab.background-image', bgImgSrc.value)
   })
 }
-const handleLike = () => {
-  const likeList = [...list.value]
-  if (!likeList.includes(bgImgSrc.value)) {
+
+const handleLikeOrDislike = () => {
+  let likeList = [...list.value]
+  if (likeList.includes(bgImgSrc.value)) {
+    likeList = likeList.filter((item) => item !== bgImgSrc.value)
+  } else {
     likeList.push(bgImgSrc.value)
   }
+  setList(likeList)
+}
+
+const handleDelete = (link: string) => {
+  let likeList = [...list.value]
+  likeList = likeList.filter((item) => item !== link)
   setList(likeList)
 }
 
@@ -135,7 +144,7 @@ const handleSelect = (link: string) => {
         <NButton round type="primary" @click="handleShowDrawer"> 收藏列表 </NButton>
         <NTooltip trigger="hover">
           <template #trigger>
-            <NButton quaternary circle type="success" @click="handleLike">
+            <NButton quaternary circle type="success" @click="handleLikeOrDislike">
               <template #icon>
                 <NIcon size="30">
                   <Heart v-if="list.includes(bgImgSrc)" />
@@ -144,7 +153,7 @@ const handleSelect = (link: string) => {
               </template>
             </NButton>
           </template>
-          喜欢此背景
+          {{ list.includes(bgImgSrc) ? '不再喜欢' : '喜欢此背景' }}
         </NTooltip>
         <NTooltip trigger="hover">
           <template #trigger>
@@ -159,10 +168,15 @@ const handleSelect = (link: string) => {
       </NSpace>
       <NDrawer v-model:show="active" :default-width="400" placement="left" resizable>
         <NDrawerContent title="收藏列表">
-          <NCard v-for="(item, index) in list" :key="index" hoverable>
+          <NCard v-for="(item, index) in list" :key="index" hoverable class="image-item">
             <template #cover>
               <img @click="handleSelect(item)" height="200" :src="item" style="cursor: pointer" />
             </template>
+            <NButton quaternary circle type="success" @click="handleDelete(item)">
+              <template #icon>
+                <NIcon size="20"> <TrashOutline /></NIcon>
+              </template>
+            </NButton>
           </NCard>
         </NDrawerContent>
       </NDrawer>
@@ -185,7 +199,7 @@ const handleSelect = (link: string) => {
   </div>
 </template>
 
-<style scoped>
+<style>
 .background-item {
   position: fixed;
   top: 0;
@@ -238,5 +252,15 @@ const handleSelect = (link: string) => {
   position: absolute;
   bottom: 20px;
   left: 20px;
+}
+
+.n-card.image-item > .n-card__content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 10px;
 }
 </style>
