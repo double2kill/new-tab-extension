@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // import Live2d from './Live2d.vue'
-import { HeartOutline, ReloadOutline } from '@vicons/ionicons5'
+import { Heart, HeartOutline, ReloadOutline } from '@vicons/ionicons5'
 import dayjs from 'dayjs'
 import {
   NButton,
@@ -137,7 +137,10 @@ const handleSelect = (link: string) => {
           <template #trigger>
             <NButton quaternary circle type="success" @click="handleLike">
               <template #icon>
-                <NIcon size="30"> <HeartOutline /></NIcon>
+                <NIcon size="30">
+                  <Heart v-if="list.includes(bgImgSrc)" />
+                  <HeartOutline v-else />
+                </NIcon>
               </template>
             </NButton>
           </template>
