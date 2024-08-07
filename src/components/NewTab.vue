@@ -1,6 +1,12 @@
 <script setup lang="ts">
 // import Live2d from './Live2d.vue'
-import { Heart, HeartOutline, ReloadOutline, TrashOutline } from '@vicons/ionicons5'
+import {
+  Heart,
+  HeartOutline,
+  ReloadOutline,
+  SettingsOutline,
+  TrashOutline
+} from '@vicons/ionicons5'
 import dayjs from 'dayjs'
 import {
   NButton,
@@ -8,6 +14,7 @@ import {
   NDrawer,
   NDrawerContent,
   NIcon,
+  NPopover,
   NSlider,
   NSpace,
   NSwitch,
@@ -126,16 +133,21 @@ const handleSelect = (link: string) => {
     </div>
     <div style="width: 600px; margin: 0 auto; margin-bottom: 10px">
       <NSwitch v-model:value="isWaiFixed" @update:value="handleChange" style="margin-bottom: 10px">
-        <template #checked> 固定角度</template>
+        <template #checked>
+          <NPopover>
+            <template #trigger> 固定角度 </template>
+            <div style="width: 200px">
+              <NSlider
+                v-model:value="randomDeg"
+                :min="MIN"
+                :max="MAX"
+                @update:value="handleSetDeg"
+              />
+            </div>
+          </NPopover>
+        </template>
         <template #unchecked> 随机角度 </template>
       </NSwitch>
-      <NSlider
-        v-if="isWaiFixed"
-        v-model:value="randomDeg"
-        :min="MIN"
-        :max="MAX"
-        @update:value="handleSetDeg"
-      />
     </div>
     <!-- <div class="center-below"></div>
     <div class="bottom-row"></div> -->
