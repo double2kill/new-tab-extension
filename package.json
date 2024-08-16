@@ -1,13 +1,16 @@
 {
-  "name": "newtab",
+  "name": "new-tab-extension",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "build:skipCheck": "vite build",
-    "serve": "vite preview"
+    "dev": "rsbuild dev",
+    "build": "vue-tsc --noEmit && rsbuild build",
+    "build:skipCheck": "rsbuild build",
+    "serve": "rsbuild preview"
   },
   "dependencies": {
+    "@rsbuild/core": "1.0.1-beta.14",
+    "@rsbuild/plugin-less": "1.0.1-beta.14",
+    "@rsbuild/plugin-vue": "1.0.1-beta.14",
     "@vicons/ionicons5": "^0.12.0",
     "ant-design-vue": "^2.2.7",
     "axios": "^1.7.2",
@@ -21,7 +24,6 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.10.3",
     "@types/chrome": "^0.0.268",
-    "@vitejs/plugin-vue": "^5.0.5",
     "@vue/compiler-sfc": "^3.2.6",
     "@vue/eslint-config-prettier": "^9.0.0",
     "@vue/eslint-config-typescript": "^11.0.3",
@@ -32,7 +34,6 @@
     "eslint-plugin-vue": "^9.26.0",
     "prettier": "^3.3.2",
     "typescript": "^5.5.3",
-    "vite": "^5.3.3",
     "vue-tsc": "^2.0.24"
   }
 }

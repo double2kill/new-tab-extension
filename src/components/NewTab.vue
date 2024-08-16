@@ -22,9 +22,10 @@ import {
 } from 'naive-ui'
 import { computed, onMounted, ref } from 'vue'
 import { useLocalStorageState } from 'vue-hooks-plus'
-import Vue3Live2d from 'vue3-live2d'
 
 import Time from './Time.vue'
+
+import VueLive2d from '@/components/VueLive2d/index.vue'
 
 const [list, setList] = useLocalStorageState('new-tab.list', {
   defaultValue: []
@@ -121,6 +122,10 @@ const handleSelect = (link: string) => {
   bgImgSrc.value = link
   localStorage.setItem('new-tab.background-image', bgImgSrc.value)
 }
+
+const [live2dModel, setLive2dModel] = useLocalStorageState('new-tab.live2d.model', {
+  defaultValue: ['Potion-Maker/Pio', 'school-2017-costume-yellow']
+})
 </script>
 
 <template>
@@ -193,21 +198,16 @@ const handleSelect = (link: string) => {
         </NDrawerContent>
       </NDrawer>
     </div>
-    <Vue3Live2d
+    <VueLive2d
       class="live2d"
       :width="300"
       :height="300"
       :resolution="2"
       :style="{ position: 'fixed', bottom: 0, right: 0, zIndex: 1 }"
       :api-path="'https://evgo2017.com/api/live2d-static-api/indexes'"
-      :model="['Potion-Maker/Pio', 'school-2017-costume-yellow']"
+      :model="live2dModel"
+      :setModel="setLive2dModel"
     />
-    <!-- <Live2d
-        :style="'position: fixed; bottom: 0; right: 0;'"
-        :model="['Potion-Maker/Pio', 'school-2017-costume-yellow']"
-        direction="right"
-        :size="200"
-      /> -->
   </div>
 </template>
 

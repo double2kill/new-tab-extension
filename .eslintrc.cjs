@@ -25,6 +25,7 @@ module.exports = {
         'newlines-between': 'always'
       }
     ],
-    'import/no-unresolved': 0
+    'import/no-unresolved': 0,
+    'import/named': 0
   }
 }
