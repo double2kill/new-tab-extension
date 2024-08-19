@@ -18,8 +18,7 @@
     "less": "^4.2.0",
     "naive-ui": "^2.38.2",
     "vue": "^3.4.31",
-    "vue-hooks-plus": "^2.2.0",
-    "vue3-live2d": "^0.0.1"
+    "vue-hooks-plus": "^2.2.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.10.3",

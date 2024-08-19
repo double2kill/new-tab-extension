@@ -41,9 +41,6 @@ importers:
       vue-hooks-plus:
         specifier: ^2.2.0
         version: 2.2.1(vue@3.4.36(typescript@5.5.4))
-      vue3-live2d:
-        specifier: ^0.0.1
-        version: 0.0.1
     devDependencies:
       '@rushstack/eslint-patch':
         specifier: ^1.10.3
@@ -1833,9 +1830,6 @@ packages:
     engines: {node: '>=10.15.0'}
     peerDependencies:
       vue: ^3.0.0
-
-  vue3-live2d@0.0.1:
-    resolution: {integrity: sha512-ulvfJ9U2yaj36cR75ssTlrwjFLdgQqRn7SvX0AND8JYzXYrA+qrG4JitBpMOvOXZOkohOMuDurHBw4RW2y0Ccg==}
 
   vue@3.4.36:
     resolution: {integrity: sha512-mIFvbLgjODfx3Iy1SrxOsiPpDb8Bo3EU+87ioimOZzZTOp15IEdAels70IjBOLO3ZFlLW5AhdwY4dWbXVQKYow==}
@@ -3843,12 +3837,6 @@ snapshots:
     dependencies:
       is-plain-object: 3.0.1
       vue: 3.4.36(typescript@5.5.4)
-
-  vue3-live2d@0.0.1:
-    dependencies:
-      axios: 1.7.3
-    transitivePeerDependencies:
-      - debug
 
   vue@3.4.36(typescript@5.5.4):
     dependencies:

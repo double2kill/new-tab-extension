@@ -7,3 +7,5 @@
 3. Enable `Developer mode`
 4. Click `Load unpacked`
 5. Select the cloned repo folder
+
+![example][example.png]

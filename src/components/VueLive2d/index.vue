@@ -34,7 +34,7 @@ let { apiPath, customId, isLeft, homePage, model, isTipBottom, tips, setModel } 
     type: Function
   },
   homePage: {
-    default: 'https://github.com/YiguiDing/vue3-live2d',
+    default: 'https://github.com/double2kill/new-tab-extension',
     type: String
   },
   tips: {
