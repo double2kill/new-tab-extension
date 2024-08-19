@@ -8,4 +8,4 @@
 4. Click `Load unpacked`
 5. Select the cloned repo folder
 
-![example][example.png]
+![example](example.png)
