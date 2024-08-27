@@ -126,6 +126,10 @@ const handleSelect = (link: string) => {
 const [live2dModel, setLive2dModel] = useLocalStorageState('new-tab.live2d.model', {
   defaultValue: ['Potion-Maker/Pio', 'school-2017-costume-yellow']
 })
+
+const [live2dMainShow, setLive2dMainShow] = useLocalStorageState('new-tab.live2d.visible', {
+  defaultValue: true
+})
 </script>
 
 <template>
@@ -207,6 +211,8 @@ const [live2dModel, setLive2dModel] = useLocalStorageState('new-tab.live2d.model
       :api-path="'https://evgo2017.com/api/live2d-static-api/indexes'"
       :model="live2dModel"
       :setModel="setLive2dModel"
+      :mainShow="live2dMainShow"
+      :setMainShow="setLive2dMainShow"
     />
   </div>
 </template>

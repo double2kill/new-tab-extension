@@ -8,7 +8,7 @@ const width = defineModel('width', { default: 400 })
 const height = defineModel('height', { default: 400 })
 const resolution = defineModel('resolution', { default: 1 })
 
-let { apiPath, customId, isLeft, homePage, model, isTipBottom, tips, setModel } = defineProps({
+const props = defineProps({
   isLeft: {
     default: false,
     type: Boolean
@@ -40,8 +40,18 @@ let { apiPath, customId, isLeft, homePage, model, isTipBottom, tips, setModel } 
   tips: {
     default: () => _tips,
     type: Object
+  },
+  mainShow: {
+    default: true,
+    type: Boolean
+  },
+  setMainShow: {
+    default: () => {},
+    type: Function
   }
 })
+
+let { apiPath, customId, isLeft, homePage, model, isTipBottom, tips, setModel } = props
 let messageTimer: any = null
 let containerDisplay = ref({
   tip: false,
@@ -49,7 +59,8 @@ let containerDisplay = ref({
   tool: false,
   toggle: false
 })
-let tipText = 'vue3-live2d 看板娘'
+
+let tipText = '看板娘'
 let modelPath = ''
 let modelTexturesId = ''
 let tools = [
@@ -163,9 +174,11 @@ function openHomePage() {
 }
 function closeLive2dMain() {
   containerDisplay.value.main = false
+  props.setMainShow(false)
 }
 function openLive2dMain() {
   containerDisplay.value.main = true
+  props.setMainShow(true)
 }
 function hideLive2dTool() {
   containerDisplay.value.tool = false
@@ -201,16 +214,13 @@ let canvasHeight = computed(() => {
   return height.value * resolution.value
 })
 let tipShow = computed(() => {
-  return mainShow.value && containerDisplay.value.tip
-})
-let mainShow = computed(() => {
-  return containerDisplay.value.main
+  return props.mainShow && containerDisplay.value.tip
 })
 let toolShow = computed(() => {
-  return mainShow.value && containerDisplay.value.tool
+  return props.mainShow && containerDisplay.value.tool
 })
 let toggleShow = computed(() => {
-  return !mainShow.value
+  return !props.mainShow
 })
 onMounted(async () => {
   ;[modelPath, modelTexturesId] = model
