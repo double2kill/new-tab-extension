@@ -26,6 +26,7 @@ import { useLocalStorageState } from 'vue-hooks-plus'
 import Time from './Time.vue'
 
 import VueLive2d from '@/components/VueLive2d/index.vue'
+import { setCursorEffect } from '@/utils/cursorEffect'
 
 const [list, setList] = useLocalStorageState('new-tab.list', {
   defaultValue: []
@@ -56,6 +57,7 @@ const isWaiFixed = computed(() => {
 
 const bgImgSrc = ref(localStorage.getItem('new-tab.background-image'))
 onMounted(() => {
+  setCursorEffect()
   randomDeg.value = localStorage.getItem('new-tab.wai.deg')
     ? parseInt(localStorage.getItem('new-tab.wai.deg') as string)
     : getRandomInteger(MIN, MAX)
@@ -130,6 +132,16 @@ const [live2dModel, setLive2dModel] = useLocalStorageState('new-tab.live2d.model
 const [live2dMainShow, setLive2dMainShow] = useLocalStorageState('new-tab.live2d.visible', {
   defaultValue: true
 })
+
+const goToSettings = () => {
+  if (chrome) {
+    chrome.tabs.create({ url: '/build/options.html' })
+    return
+  }
+  if (location.href.includes('localhost')) {
+    window.open('/options')
+  }
+}
 </script>
 
 <template>
@@ -162,6 +174,7 @@ const [live2dMainShow, setLive2dMainShow] = useLocalStorageState('new-tab.live2d
     <div class="bottom-row"></div> -->
     <div class="settings">
       <NSpace>
+        <NButton round type="primary" @click="goToSettings"> 设置 </NButton>
         <NButton round type="primary" @click="handleShowDrawer"> 收藏列表 </NButton>
         <NTooltip trigger="hover">
           <template #trigger>

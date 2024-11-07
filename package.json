@@ -2,18 +2,19 @@
   "name": "new-tab-extension",
   "version": "0.0.0",
   "scripts": {
-    "dev": "rsbuild dev",
-    "build": "vue-tsc --noEmit && rsbuild build",
-    "build:skipCheck": "rsbuild build",
-    "serve": "rsbuild preview"
+    "dev": "rsbuild dev --config src/rsbuild/rsbuild.config.ts",
+    "build": "pnpm run build:core && pnpm build:content-script",
+    "build:core": "vue-tsc --noEmit && rsbuild build --config src/rsbuild/rsbuild.config.ts",
+    "build:content-script": "vue-tsc --noEmit && rsbuild build --config src/rsbuild/rsbuild-content-script.config.ts"
   },
   "dependencies": {
     "@rsbuild/core": "1.0.1-beta.14",
     "@rsbuild/plugin-less": "1.0.1-beta.14",
     "@rsbuild/plugin-vue": "1.0.1-beta.14",
     "@vicons/ionicons5": "^0.12.0",
-    "ant-design-vue": "^2.2.7",
     "axios": "^1.7.5",
+    "code-inspector-plugin": "^0.17.7",
+    "cursor-effects": "^1.0.15",
     "dayjs": "^1.11.11",
     "less": "^4.2.0",
     "naive-ui": "^2.38.2",
