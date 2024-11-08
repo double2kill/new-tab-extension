@@ -37,13 +37,13 @@ const { message } = createDiscreteApi(['message'])
 
 export const setCursorEffect = async (type?: CursorEffectType, shouldShowMessage?: boolean) => {
   let cursorType = type
+  cursorInstance?.destroy()
   if (!cursorType) {
     cursorType = await storageGet('NEW_TAB_CURSOR_EFFECT')
   }
   if (!cursorType) {
     return
   }
-  cursorInstance?.destroy()
 
   if (shouldShowMessage) {
     message.info('鼠标效果修改后需要刷新页面才能生效')
