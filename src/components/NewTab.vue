@@ -1,37 +1,15 @@
 <script setup lang="ts">
 // import Live2d from './Live2d.vue'
-import {
-  Heart,
-  HeartOutline,
-  ReloadOutline,
-  SettingsOutline,
-  TrashOutline
-} from '@vicons/ionicons5'
-import dayjs from 'dayjs'
-import {
-  NButton,
-  NCard,
-  NDrawer,
-  NDrawerContent,
-  NIcon,
-  NPopover,
-  NSlider,
-  NSpace,
-  NSwitch,
-  NTooltip
-} from 'naive-ui'
+import { NButton, NPopover, NSlider, NSwitch } from 'naive-ui'
 import { computed, onMounted, ref } from 'vue'
 import { useLocalStorageState } from 'vue-hooks-plus'
 
+import LikeImageList from './LikeImageList/LikeImageList.vue'
 import Time from './Time.vue'
 
 import VueLive2d from '@/components/VueLive2d/index.vue'
 import { setCursorEffect } from '@/utils/cursorEffect'
 
-const [list, setList] = useLocalStorageState('new-tab.list', {
-  defaultValue: []
-})
-const active = ref(false)
 const MIN = -180
 const MAX = 180
 
@@ -50,27 +28,19 @@ const handleSetDeg = () => {
 const [waiMode, setWaiMode] = useLocalStorageState('new-tab.wai.mode', {
   defaultValue: 'random'
 })
+const [bgImgSrc, setBgImgSrc] = useLocalStorageState('new-tab.background-image', {
+  defaultValue: ''
+})
 
 const isWaiFixed = computed(() => {
   return waiMode.value === 'fixed'
 })
 
-const bgImgSrc = ref(localStorage.getItem('new-tab.background-image'))
-onMounted(() => {
+onMounted(async () => {
   setCursorEffect()
   randomDeg.value = localStorage.getItem('new-tab.wai.deg')
     ? parseInt(localStorage.getItem('new-tab.wai.deg') as string)
     : getRandomInteger(MIN, MAX)
-  const today = dayjs().format('YYYY-MM-DD')
-  const fetchDate = localStorage.getItem('new-tab.fetch-background-image-date')
-  if (fetchDate === today && bgImgSrc.value) {
-    return
-  }
-  fetch('https://api.timelessq.com/bing').then((data) => {
-    bgImgSrc.value = data.url
-    localStorage.setItem('new-tab.background-image', bgImgSrc.value)
-    localStorage.setItem('new-tab.fetch-background-image-date', today)
-  })
 })
 
 const handleChange = (value: boolean) => {
@@ -84,29 +54,6 @@ const handleChange = (value: boolean) => {
   randomDeg.value = getRandomInteger(MIN, MAX)
 }
 
-const handleRandom = () => {
-  fetch('https://api.timelessq.com/bing/random').then((data) => {
-    bgImgSrc.value = data.url
-    localStorage.setItem('new-tab.background-image', bgImgSrc.value)
-  })
-}
-
-const handleLikeOrDislike = () => {
-  let likeList = [...list.value]
-  if (likeList.includes(bgImgSrc.value)) {
-    likeList = likeList.filter((item) => item !== bgImgSrc.value)
-  } else {
-    likeList.push(bgImgSrc.value)
-  }
-  setList(likeList)
-}
-
-const handleDelete = (link: string) => {
-  let likeList = [...list.value]
-  likeList = likeList.filter((item) => item !== link)
-  setList(likeList)
-}
-
 let tips = ref({
   mouseover: [
     {
@@ -115,15 +62,6 @@ let tips = ref({
     }
   ]
 })
-
-const handleShowDrawer = () => {
-  active.value = true
-}
-
-const handleSelect = (link: string) => {
-  bgImgSrc.value = link
-  localStorage.setItem('new-tab.background-image', bgImgSrc.value)
-}
 
 const [live2dModel, setLive2dModel] = useLocalStorageState('new-tab.live2d.model', {
   defaultValue: ['Potion-Maker/Pio', 'school-2017-costume-yellow']
@@ -150,7 +88,6 @@ const goToSettings = () => {
     <div class="center-above" :style="`transform: rotate(${-randomDeg}deg)`">
       <Time />
       <!-- <h1>Hello New Tab !</h1> -->
-      <!-- <FocusOn /> -->
     </div>
     <div style="width: 600px; margin: 0 auto; margin-bottom: 10px">
       <NSwitch v-model:value="isWaiFixed" @update:value="handleChange" style="margin-bottom: 10px">
@@ -173,47 +110,8 @@ const goToSettings = () => {
     <!-- <div class="center-below"></div>
     <div class="bottom-row"></div> -->
     <div class="settings">
-      <NSpace>
-        <NButton round type="primary" @click="goToSettings"> 设置 </NButton>
-        <NButton round type="primary" @click="handleShowDrawer"> 收藏列表 </NButton>
-        <NTooltip trigger="hover">
-          <template #trigger>
-            <NButton quaternary circle type="success" @click="handleLikeOrDislike">
-              <template #icon>
-                <NIcon size="30">
-                  <Heart v-if="list.includes(bgImgSrc)" />
-                  <HeartOutline v-else />
-                </NIcon>
-              </template>
-            </NButton>
-          </template>
-          {{ list.includes(bgImgSrc) ? '不再喜欢' : '喜欢此背景' }}
-        </NTooltip>
-        <NTooltip trigger="hover">
-          <template #trigger>
-            <NButton quaternary circle type="success" @click="handleRandom">
-              <template #icon>
-                <NIcon size="30"> <ReloadOutline /></NIcon>
-              </template>
-            </NButton>
-          </template>
-          随机背景
-        </NTooltip>
-      </NSpace>
-      <NDrawer v-model:show="active" :default-width="400" placement="left" resizable>
-        <NDrawerContent title="收藏列表">
-          <NCard v-for="(item, index) in list" :key="index" hoverable class="image-item">
-            <template #cover>
-              <img @click="handleSelect(item)" height="200" :src="item" style="cursor: pointer" />
-            </template>
-            <NButton quaternary circle type="success" @click="handleDelete(item)">
-              <template #icon>
-                <NIcon size="20"> <TrashOutline /></NIcon>
-              </template>
-            </NButton>
-          </NCard>
-        </NDrawerContent>
-      </NDrawer>
+      <NButton round type="primary" @click="goToSettings"> 设置 </NButton>
+      <LikeImageList :bgImgSrc="bgImgSrc" :setBgImgSrc="setBgImgSrc" />
     </div>
     <VueLive2d
       class="live2d"
@@ -279,19 +177,9 @@ const goToSettings = () => {
 
 .settings {
   display: flex;
-  flex-direction: column;
+  gap: 15px;
   position: absolute;
   bottom: 20px;
   left: 20px;
-}
-
-.n-card.image-item > .n-card__content {
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
-  padding: 10px;
 }
 </style>
