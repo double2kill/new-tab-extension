@@ -17,6 +17,9 @@ importers:
       '@rsbuild/plugin-vue':
         specifier: 1.0.1-beta.14
         version: 1.0.1-beta.14(@rsbuild/core@1.0.1-beta.14)(@vue/compiler-sfc@3.4.36)(vue@3.4.36(typescript@5.5.4))
+      '@vicons/carbon':
+        specifier: ^0.12.0
+        version: 0.12.0
       '@vicons/ionicons5':
         specifier: ^0.12.0
         version: 0.12.0
@@ -391,6 +394,9 @@ packages:
 
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
+
+  '@vicons/carbon@0.12.0':
+    resolution: {integrity: sha512-kCOgr/ZOhZzoiFLJ8pwxMa2TMxrkCUOA22qExPabus35F4+USqzcsxaPoYtqRd9ROOYiHrSqwapak/ywF0D9bg==}
 
   '@vicons/ionicons5@0.12.0':
     resolution: {integrity: sha512-Iy1EUVRpX0WWxeu1VIReR1zsZLMc4fqpt223czR+Rpnrwu7pt46nbnC2ycO7ItI/uqDLJxnbcMC7FujKs9IfFA==}
@@ -2185,6 +2191,8 @@ snapshots:
       eslint-visitor-keys: 3.4.3
 
   '@ungap/structured-clone@1.2.0': {}
+
+  '@vicons/carbon@0.12.0': {}
 
   '@vicons/ionicons5@0.12.0': {}
 

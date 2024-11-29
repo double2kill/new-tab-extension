@@ -5,6 +5,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useLocalStorageState } from 'vue-hooks-plus'
 
 import LikeImageList from './LikeImageList/LikeImageList.vue'
+import TaskList from './TaskList/TaskList.vue'
 import Time from './Time.vue'
 
 import VueLive2d from '@/components/VueLive2d/index.vue'
@@ -25,12 +26,33 @@ const handleSetDeg = () => {
   localStorage.setItem('new-tab.wai.deg', randomDeg.value.toString())
 }
 
+enum WorkMode {
+  Time = 'time',
+  Task = 'task'
+}
+
+const [workMode, setWorkMode] = useLocalStorageState('new-tab.work.mode', {
+  defaultValue: WorkMode.Time
+})
+
+onMounted(() => {
+  setWorkMode(Math.random() > 0.5 ? WorkMode.Time : WorkMode.Task)
+})
+
 const [waiMode, setWaiMode] = useLocalStorageState('new-tab.wai.mode', {
   defaultValue: 'random'
 })
 const [bgImgSrc, setBgImgSrc] = useLocalStorageState('new-tab.background-image', {
   defaultValue: ''
 })
+
+const isTaskMode = computed(() => {
+  return workMode.value === WorkMode.Task
+})
+
+const handleTaskModeChange = (value: boolean) => {
+  setWorkMode(value ? WorkMode.Task : WorkMode.Time)
+}
 
 const isWaiFixed = computed(() => {
   return waiMode.value === 'fixed'
@@ -85,11 +107,22 @@ const goToSettings = () => {
 <template>
   <img v-if="bgImgSrc" class="background-item" :src="bgImgSrc" alt="Bing每日壁纸UHD超高清原图" />
   <div class="app">
-    <div class="center-above" :style="`transform: rotate(${-randomDeg}deg)`">
-      <Time />
-      <!-- <h1>Hello New Tab !</h1> -->
+    <NSwitch
+      class="mode-switch"
+      v-model:value="isTaskMode"
+      @update:value="handleTaskModeChange"
+      style="margin-bottom: 10px"
+    >
+      <template #checked> 工作模式 </template>
+      <template #unchecked> 时间模式</template>
+    </NSwitch>
+    <div class="center-above">
+      <div v-if="!isTaskMode" :style="`transform: rotate(${-randomDeg}deg)`">
+        <Time />
+      </div>
+      <TaskList v-else />
     </div>
-    <div style="width: 600px; margin: 0 auto; margin-bottom: 10px">
+    <div v-if="!isTaskMode" class="ai-mode-switch">
       <NSwitch v-model:value="isWaiFixed" @update:value="handleChange" style="margin-bottom: 10px">
         <template #checked>
           <NPopover>
@@ -166,7 +199,7 @@ const goToSettings = () => {
   justify-content: center;
   align-items: center;
   text-align: center;
-  flex-direction: column;
+  flex-direction: row;
 }
 .top-row,
 .bottom-row {
@@ -181,5 +214,14 @@ const goToSettings = () => {
   position: absolute;
   bottom: 20px;
   left: 20px;
+}
+.mode-switch {
+  z-index: 10;
+  margin-top: 20px;
+}
+.wai-mode-switch {
+  width: 600px;
+  margin: 0 auto;
+  margin-bottom: 10px;
 }
 </style>
