@@ -11,7 +11,7 @@ import {
   NSpace,
   NTooltip
 } from 'naive-ui'
-import { onMounted, ref, toRaw } from 'vue'
+import { computed, onMounted, ref, toRaw, toValue } from 'vue'
 import { useLocalStorageState } from 'vue-hooks-plus'
 
 import { loadImage } from './thumbnailStore'
@@ -36,9 +36,11 @@ const [shouldPickFromLikeList, setShouldPickFromLikeList] = useLocalStorageState
   }
 )
 const list = ref<ListItem[]>([])
+const sortedList = ref<ListItem[]>([])
 
 const setList = (value: ListItem[]) => {
-  list.value = value.reverse()
+  list.value = value
+  sortedList.value = sortList(value)
   setLinkList(value.map((item) => item.url))
 }
 
@@ -68,7 +70,6 @@ function getRandomElement(arr: ListItem[]): ListItem | undefined {
     return
   }
   const randomIndex = Math.floor(Math.random() * arr.length)
-  console.log(randomIndex)
   return arr[randomIndex]
 }
 
@@ -127,6 +128,13 @@ const handleDelete = (item: ListItem) => {
   likeList = likeList.filter((item) => item?.url !== link)
   setList(likeList)
 }
+
+const sortList = (data: any[]) => {
+  const newData = [...data]
+  return newData?.sort((a, b) => {
+    return data.indexOf(b) - data.indexOf(a)
+  })
+}
 </script>
 
 <template>
@@ -165,7 +173,7 @@ const handleDelete = (item: ListItem) => {
           </NCheckbox>
         </div>
         <NCard
-          v-for="(item, index) in list"
+          v-for="(item, index) in sortedList"
           :key="index"
           hoverable
           class="image-item"
