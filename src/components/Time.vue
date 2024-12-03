@@ -81,6 +81,7 @@ p {
 .word-card {
   width: 100%;
   max-width: 300px;
+  margin: 0 auto;
   &.n-card {
     text-shadow: none;
     color: #333;
