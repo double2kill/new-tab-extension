@@ -30,7 +30,8 @@ const handleCompleteTask = (id: number) => {
     return [...prev]
   })
 }
-const handleAddTask = () => {
+
+const handleAddTask = async () => {
   setTaskList((prev: TaskItem[] = []) => {
     return [
       ...prev,
@@ -44,7 +45,7 @@ const handleAddTask = () => {
   })
 }
 
-onMounted(() => {
+onMounted(async () => {
   const validTaskList = taskList.value?.filter((item) => item.updateTime)
   setTaskList(validTaskList)
 })

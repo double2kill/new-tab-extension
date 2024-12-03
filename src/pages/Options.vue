@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NSelect } from 'naive-ui'
+import { NInput, NSelect } from 'naive-ui'
 
 import { useChromeStorageState } from '@/hooks/useChromeStorageState'
 import { CursorEffectType, setCursorEffect } from '@/utils/cursorEffect'
@@ -14,6 +14,11 @@ const [newTabCursorEffect, setNewTabCursorEffect] = useChromeStorageState<Cursor
     }
   }
 )
+
+const [apiKey, setApiKey] = useChromeStorageState('NEW_TAB_ZHI_PU_API_KEY', {
+  default: '',
+  chromeDefault: ''
+})
 
 const options: { label: string; value: string }[] = [
   { label: '无效果', value: '' },
@@ -47,6 +52,11 @@ const handleCursorEffectChange = (value: CursorEffectType) => {
         :options="options"
         @change="handleCursorEffectChange"
       />
+    </div>
+    <div style="margin: 20px">
+      智谱 API Key
+      <a href="https://open.bigmodel.cn/usercenter/proj-mgmt/apikeys" target="_blank">点击获取</a>
+      <NInput clearable v-model:value="apiKey" @update:value="setApiKey" />
     </div>
   </div>
 </template>

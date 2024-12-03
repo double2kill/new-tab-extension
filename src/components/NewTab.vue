@@ -11,8 +11,8 @@ import Time from './Time.vue'
 import VueLive2d from '@/components/VueLive2d/index.vue'
 import { setCursorEffect } from '@/utils/cursorEffect'
 
-const MIN = -180
-const MAX = 180
+const MIN = -120
+const MAX = 120
 
 const getRandomInteger = (min: number, max: number) => {
   min = Math.ceil(min)
