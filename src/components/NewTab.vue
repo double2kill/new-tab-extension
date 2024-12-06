@@ -94,12 +94,13 @@ const [live2dMainShow, setLive2dMainShow] = useLocalStorageState('new-tab.live2d
 })
 
 const goToSettings = () => {
+  if (location.href.includes('localhost')) {
+    window.open('/options')
+    return
+  }
   if (chrome) {
     chrome.tabs.create({ url: '/build/options.html' })
     return
-  }
-  if (location.href.includes('localhost')) {
-    window.open('/options')
   }
 }
 </script>

@@ -7,6 +7,8 @@ import { useLocalStorageState } from 'vue-hooks-plus'
 import TaskCard from './TaskCard.vue'
 import type { TaskItem } from './type'
 
+import { getAudioData } from '@/services/tts/volcano'
+
 const [taskList, setTaskList] = useLocalStorageState<TaskItem[]>('new-tab.task-list', {
   defaultValue: []
 })

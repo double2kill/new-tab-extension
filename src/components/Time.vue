@@ -1,14 +1,20 @@
 <script setup lang="ts">
+import axios from 'axios'
 import dayjs from 'dayjs'
 import zhCN from 'dayjs/locale/zh-cn'
 import { NCard, NSpin } from 'naive-ui'
-import { onBeforeMount, onUnmounted, ref } from 'vue'
-import { useRequest } from 'vue-hooks-plus'
+import { onBeforeMount, onMounted, onUnmounted, ref } from 'vue'
+import { useLocalStorageState, useRequest } from 'vue-hooks-plus'
 
 import { useChromeStorageState } from '@/hooks/useChromeStorageState'
+import { playAudioVoice } from '@/services/tts/volcano'
 import { sendGLMMessage } from '@/services/zhipu'
 
 const [apiKey] = useChromeStorageState('NEW_TAB_ZHI_PU_API_KEY', { default: '', chromeDefault: '' })
+const DEFAULT_SKIP_TIMES = 10
+const [audioSkipTimes, setAudioSkipTimes] = useLocalStorageState('new-tab.audio.skip-times', {
+  defaultValue: 0
+})
 
 dayjs.locale(zhCN)
 
@@ -27,9 +33,49 @@ onBeforeMount(() => {
   intervalId = setInterval(refreshTime, 1000)
 })
 
+onMounted(async () => {
+  if (audioSkipTimes.value > 0) {
+    setAudioSkipTimes(audioSkipTimes.value - 1)
+    return
+  }
+  setAudioSkipTimes(DEFAULT_SKIP_TIMES)
+  const { data: greetingMessageData } = await axios.get(
+    'https://api.kuleu.com/api/getGreetingMessage'
+  )
+  playAudioVoice(greetingMessageData)
+})
+
 onUnmounted(() => {
   clearInterval(intervalId)
 })
+
+const PROMPT_LIST = [
+  '请随机生成一个英语单词。',
+  '生成一个与‘自然’相关的英语单词。',
+  '生成一个与‘宇宙’相关的英语单词。',
+  '生成一个与‘医学’相关的英语单词。',
+  '生成一个与‘计算机科学’相关的英语单词。',
+  '生成一个与‘法律’相关的英语单词。',
+  '生成一个3到5个字母的英语单词。',
+  '提供一个至少7个字母的英语单词。',
+  '请生成一个抽象的英语单词。',
+  '生成一个英语专有名词。',
+  '我需要一个物质的英语名词。',
+  '在描述‘海洋’时，提供一个相关的英语单词。',
+  '关于‘环境保护’，请提供一个英语单词。',
+  '在讨论‘古代文明’时，生成一个英语单词。',
+  '生成一个以‘A’开头的英语单词。',
+  '请提供一个以辅音字母结尾的英语单词。',
+  '请生成五个与‘音乐’相关的英语单词。',
+  '列出三个与‘运动’相关的英语单词。',
+  '生成一个带有正面情感的英语单词。',
+  '我需要一个带有负面情感的英语单词。'
+]
+
+function getRandomElement(arr: string[]) {
+  const index = Math.floor(Math.random() * arr.length)
+  return arr[index]
+}
 
 const { data: englishWord, loading } = useRequest(
   async () => {
@@ -43,7 +89,7 @@ const { data: englishWord, loading } = useRequest(
       },
       {
         role: 'user',
-        content: '随机生成一个单词'
+        content: getRandomElement(PROMPT_LIST)
       }
     ])
   },
