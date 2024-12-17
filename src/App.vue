@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import NewTab from './components/NewTab.vue'
+import './uno.css'
 </script>
 
 <template>

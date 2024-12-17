@@ -4,6 +4,7 @@ import { NButton, NPopover, NSlider, NSwitch } from 'naive-ui'
 import { computed, onMounted, ref } from 'vue'
 import { useLocalStorageState } from 'vue-hooks-plus'
 
+import LearnCard from './LearnCard/LearnCard.vue'
 import LikeImageList from './LikeImageList/LikeImageList.vue'
 import TaskList from './TaskList/TaskList.vue'
 import Time from './Time.vue'
@@ -107,9 +108,9 @@ const goToSettings = () => {
 
 <template>
   <img v-if="bgImgSrc" class="background-item" :src="bgImgSrc" alt="Bing每日壁纸UHD超高清原图" />
-  <div class="app">
+  <div class="app flex flex-col gap-8">
     <NSwitch
-      class="mode-switch"
+      class="mode-switch m-t-8 important-m-b-0"
       v-model:value="isTaskMode"
       @update:value="handleTaskModeChange"
       style="margin-bottom: 10px"
@@ -117,13 +118,14 @@ const goToSettings = () => {
       <template #checked> 工作模式 </template>
       <template #unchecked> 时间模式</template>
     </NSwitch>
-    <div class="center-above">
-      <div v-if="!isTaskMode" :style="`transform: rotate(${-randomDeg}deg)`">
+    <div class="flex flex-col items-center justify-center h-full">
+      <div v-if="!isTaskMode" class="m-t--16" :style="`transform: rotate(${-randomDeg}deg)`">
         <Time />
+        <LearnCard />
       </div>
       <TaskList v-else />
     </div>
-    <div v-if="!isTaskMode" class="ai-mode-switch">
+    <div v-if="!isTaskMode" class="width-[600]">
       <NSwitch v-model:value="isWaiFixed" @update:value="handleChange" style="margin-bottom: 10px">
         <template #checked>
           <NPopover>
@@ -141,8 +143,6 @@ const goToSettings = () => {
         <template #unchecked> 随机角度 </template>
       </NSwitch>
     </div>
-    <!-- <div class="center-below"></div>
-    <div class="bottom-row"></div> -->
     <div class="settings">
       <NButton round type="primary" @click="goToSettings"> 设置 </NButton>
       <LikeImageList :bgImgSrc="bgImgSrc" :setBgImgSrc="setBgImgSrc" />
@@ -184,15 +184,12 @@ const goToSettings = () => {
     Microsoft YaHei,
     WenQuanYi Micro Hei,
     sans-serif;
-  display: flex;
-  flex-direction: column;
   transition: opacity 0.3s var(--a-curve);
   text-shadow:
     0 0 8px #666,
     0 0 2px #666;
 }
-.center-above,
-.center-below {
+.center-above {
   max-width: 100%;
   max-height: 100%;
   flex: 1 1 50%;
@@ -218,11 +215,5 @@ const goToSettings = () => {
 }
 .mode-switch {
   z-index: 10;
-  margin-top: 20px;
-}
-.wai-mode-switch {
-  width: 600px;
-  margin: 0 auto;
-  margin-bottom: 10px;
 }
 </style>
