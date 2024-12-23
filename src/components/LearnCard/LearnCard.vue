@@ -9,6 +9,14 @@ import { sendGLMMessage } from '@/services/zhipu'
 
 const isCardExpanded = ref(false)
 const [apiKey] = useChromeStorageState('NEW_TAB_ZHI_PU_API_KEY', { default: '', chromeDefault: '' })
+type WordInfo = {
+  text: string
+  addedTime: number
+  count: number
+}
+const [learnHistory, setLearnHistory] = useChromeStorageState<WordInfo[]>('NEW_TAB_LEARN_HISTORY', {
+  default: []
+})
 
 const PROMPT_LIST = [
   '请随机生成一个英语单词。',
@@ -37,21 +45,41 @@ function getRandomElement(arr: string[]) {
   const index = Math.floor(Math.random() * arr.length)
   return arr[index]
 }
+
+const addWordToHistory = (word?: string | null) => {
+  if (!word) {
+    return
+  }
+  setLearnHistory([
+    ...learnHistory.value,
+    {
+      text: word,
+      addedTime: Date.now()
+    }
+  ])
+}
+
 const { data: englishWord, loading } = useRequest(
   async () => {
     if (!apiKey.value) {
       return
     }
-    return sendGLMMessage([
+    const word = await sendGLMMessage([
       {
         role: 'system',
-        content: '你是一个简单的单词生成助手，每次只需要随机生成一个英语单词'
+        content: '你是一个简单的单词生成助手，每次只需要随机生成一个新的英语单词, 不能和学过的重复'
       },
       {
         role: 'user',
-        content: '随机因子：' + Math.random() + '\n' + getRandomElement(PROMPT_LIST)
+        content:
+          getRandomElement(PROMPT_LIST) +
+          '\n' +
+          `这些是我学过的单词: ${learnHistory.value.slice(0, 100).map((item) => item.text)}`
       }
     ])
+    console.log(learnHistory)
+    addWordToHistory(word)
+    return word
   },
   {
     refreshDeps: [apiKey]

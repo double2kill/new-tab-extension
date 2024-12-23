@@ -10,8 +10,8 @@ export type LOCATION = {
 }
 
 type ChromeStorageStateOption<P> = {
-  default?: any
-  chromeDefault?: any
+  default?: P
+  chromeDefault?: P
   onMounted?: (value: any) => void
   location?: LOCATION
 }
@@ -30,7 +30,7 @@ export const useChromeStorageState = <P = any>(
   }
 
   onMounted(async () => {
-    const initialState = (await storageGet(key)) ?? option.chromeDefault
+    const initialState = (await storageGet(key)) ?? option.default ?? option.chromeDefault
     state.value = initialState
     option.onMounted?.(initialState)
   })
