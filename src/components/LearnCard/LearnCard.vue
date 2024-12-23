@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ArrowDownOutline } from '@vicons/ionicons5'
 import { NCard, NIcon, NSpin } from 'naive-ui'
-import { ref } from 'vue'
+import { ref, toValue } from 'vue'
 import { useRequest } from 'vue-hooks-plus'
 
 import { useChromeStorageState } from '@/hooks/useChromeStorageState'
@@ -64,6 +64,7 @@ const { data: englishWord, loading } = useRequest(
     if (!apiKey.value) {
       return
     }
+    await new Promise((resolve) => setTimeout(resolve, 100))
     const word = await sendGLMMessage([
       {
         role: 'system',
@@ -74,10 +75,9 @@ const { data: englishWord, loading } = useRequest(
         content:
           getRandomElement(PROMPT_LIST) +
           '\n' +
-          `这些是我学过的单词: ${learnHistory.value.slice(0, 100).map((item) => item.text)}`
+          learnHistory.value.map((item) => item.text).join(',')
       }
     ])
-    console.log(learnHistory)
     addWordToHistory(word)
     return word
   },

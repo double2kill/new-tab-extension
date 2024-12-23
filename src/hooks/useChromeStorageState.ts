@@ -30,7 +30,7 @@ export const useChromeStorageState = <P = any>(
   }
 
   onMounted(async () => {
-    const initialState = (await storageGet(key)) ?? option.default ?? option.chromeDefault
+    const initialState = (await storageGet(key)) ?? option.chromeDefault ?? option.default
     state.value = initialState
     option.onMounted?.(initialState)
   })
