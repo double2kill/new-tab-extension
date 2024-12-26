@@ -23,9 +23,15 @@ importers:
       '@vicons/carbon':
         specifier: ^0.12.0
         version: 0.12.0
+      '@vicons/fluent':
+        specifier: ^0.13.0
+        version: 0.13.0
       '@vicons/ionicons5':
         specifier: ^0.12.0
         version: 0.12.0
+      '@vicons/material':
+        specifier: ^0.13.0
+        version: 0.13.0
       axios:
         specifier: ^1.7.5
         version: 1.7.5
@@ -910,8 +916,14 @@ packages:
   '@vicons/carbon@0.12.0':
     resolution: {integrity: sha512-kCOgr/ZOhZzoiFLJ8pwxMa2TMxrkCUOA22qExPabus35F4+USqzcsxaPoYtqRd9ROOYiHrSqwapak/ywF0D9bg==}
 
+  '@vicons/fluent@0.13.0':
+    resolution: {integrity: sha512-bYGZsOE3qzvm3Cm43e7tybgGlr5ZUpYqtRZq0g0Tfupe8jIzLolpvQLNUt1zS8Mgt6goTbUk5YH7Fkv16jkykg==}
+
   '@vicons/ionicons5@0.12.0':
     resolution: {integrity: sha512-Iy1EUVRpX0WWxeu1VIReR1zsZLMc4fqpt223czR+Rpnrwu7pt46nbnC2ycO7ItI/uqDLJxnbcMC7FujKs9IfFA==}
+
+  '@vicons/material@0.13.0':
+    resolution: {integrity: sha512-lKVxFNprM+CaBkUH3gt6VjIeiMsKQl2zARQMwTCZruQl2vRHzyeZiKeCflWS99CEfv2JzX/6y697smxlzyxcVw==}
 
   '@volar/language-core@2.4.0-alpha.18':
     resolution: {integrity: sha512-JAYeJvYQQROmVRtSBIczaPjP3DX4QW1fOqW1Ebs0d3Y3EwSNRglz03dSv0Dm61dzd0Yx3WgTW3hndDnTQqgmyg==}
@@ -3429,7 +3441,11 @@ snapshots:
 
   '@vicons/carbon@0.12.0': {}
 
+  '@vicons/fluent@0.13.0': {}
+
   '@vicons/ionicons5@0.12.0': {}
+
+  '@vicons/material@0.13.0': {}
 
   '@volar/language-core@2.4.0-alpha.18':
     dependencies:

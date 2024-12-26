@@ -1,13 +1,22 @@
 <script setup lang="ts">
-import { ArrowDownOutline } from '@vicons/ionicons5'
-import { NCard, NIcon, NSpin } from 'naive-ui'
-import { ref, toValue } from 'vue'
+import { Speaker216Regular } from '@vicons/fluent'
+import { ReloadOutline } from '@vicons/ionicons5'
+import { FlipCameraAndroidFilled } from '@vicons/material'
+import { NIcon, NSpin } from 'naive-ui'
+import { ref, watch } from 'vue'
 import { useRequest } from 'vue-hooks-plus'
 
 import { useChromeStorageState } from '@/hooks/useChromeStorageState'
+import { playAudioVoice } from '@/services/tts/volcano'
 import { sendGLMMessage } from '@/services/zhipu'
 
-const isCardExpanded = ref(false)
+const isCardFlip = ref(false)
+const isCardFlipDelay = ref(false)
+watch(isCardFlip, (value) => {
+  setTimeout(() => {
+    isCardFlipDelay.value = value
+  }, 400)
+})
 const [apiKey] = useChromeStorageState('NEW_TAB_ZHI_PU_API_KEY', { default: '', chromeDefault: '' })
 type WordInfo = {
   text: string
@@ -54,7 +63,11 @@ const addWordToHistory = (word?: string | null) => {
   ])
 }
 
-const { data: englishWord, loading } = useRequest(
+const {
+  data: englishWord,
+  loading,
+  refresh
+} = useRequest(
   async () => {
     if (!apiKey.value) {
       return
@@ -102,35 +115,88 @@ const { data: chineseWord, loading: chineseWordLoading } = useRequest(
     refreshDeps: [englishWord]
   }
 )
+
+const [ttsAccessToken] = useChromeStorageState('NEW_TAB_TTS_ACCESS_TOKEN', {
+  default: '',
+  chromeDefault: ''
+})
+
+const handleSpeak = async (word?: string | null) => {
+  if (!word) {
+    return
+  }
+  playAudioVoice(word)
+}
 </script>
 
 <template>
-  <div v-if="apiKey" class="word-card max-w-100 m-x-[auto] p-4">
-    <div class="font-size-5 m-b-2">学单词</div>
-    <div class="flex flex-col gap-4">
+  <div
+    v-if="apiKey"
+    class="word-card max-w-100 m-x-[auto] p-4 preserve-3d transition-all duration-1000"
+    :class="{ 'transform-rotate-y-180': isCardFlip }"
+  >
+    <div v-if="!isCardFlipDelay" class="flex flex-col gap-4 relative backface-hidden">
+      <div class="h-full w-full">
+        <div class="font-size-5">学单词</div>
+      </div>
       <div class="whitespace-pre w-full font-size-6 font-bold">
         <NSpin v-if="loading" />
         <span v-else>{{ englishWord }}</span>
       </div>
-      <div class="font-size-4 transition-height duration-300" v-if="isCardExpanded">
+      <div class="flex gap-2 justify-center">
+        <span
+          v-if="ttsAccessToken"
+          class="m-t-2 hover-color-[#18a058] cursor-pointer inline-flex items-center gap-2 font-size-4"
+          @click="handleSpeak(englishWord)"
+        >
+          <NIcon>
+            <Speaker216Regular />
+          </NIcon>
+          <span class="font-size-3">朗读</span>
+        </span>
+        <span
+          class="m-t-2 hover-color-[#18a058] cursor-pointer inline-flex items-center gap-2 font-size-4"
+          @click="
+            () => {
+              isCardFlip = !isCardFlip
+            }
+          "
+        >
+          <NIcon>
+            <FlipCameraAndroidFilled />
+          </NIcon>
+          <span class="font-size-3">查看翻译</span>
+        </span>
+        <span
+          class="m-t-2 hover-color-[#18a058] cursor-pointer inline-flex items-center gap-2 font-size-4"
+          :class="{ 'pointer-events-none': loading }"
+          @click="refresh"
+        >
+          <NIcon> <ReloadOutline /></NIcon>
+          <span class="font-size-3">刷新</span>
+        </span>
+      </div>
+    </div>
+    <div v-else class="backface-hidden transform-rotate-y-180">
+      <div class="h-full w-full">
+        <div class="font-size-5">翻译</div>
+      </div>
+      <div class="m-y-8 font-size-4 transition-height duration-300">
         <NSpin v-if="chineseWordLoading" />
         <span else> {{ chineseWord }}</span>
       </div>
       <div
-        class="m-x-auto m-b--2 hover-color-[#18a058] cursor-pointer flex justify-center items-center gap-2 font-size-4"
+        class="m-x-auto m-t-2 hover-color-[#18a058] cursor-pointer flex justify-center items-center gap-2 font-size-4"
         @click="
           () => {
-            isCardExpanded = !isCardExpanded
+            isCardFlip = !isCardFlip
           }
         "
       >
-        <NIcon
-          class="transition-all duration-300"
-          :class="{ 'transform-rotate-180': isCardExpanded }"
-        >
-          <ArrowDownOutline />
+        <NIcon>
+          <FlipCameraAndroidFilled />
         </NIcon>
-        <span class="font-size-3">{{ isCardExpanded ? '收起' : '展开查看翻译' }}</span>
+        <span class="font-size-3">查看单词</span>
       </div>
     </div>
   </div>
@@ -144,9 +210,5 @@ const { data: chineseWord, loading: chineseWordLoading } = useRequest(
   background-color: rgba(236, 217, 188, 0.8);
   box-shadow: 0 3px 15px 2px rgba(191, 158, 118, 0.2);
   border: 1px solid rgba(224, 186, 140, 0.62);
-  .word-card__content {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
 }
 </style>
