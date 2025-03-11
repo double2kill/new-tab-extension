@@ -1,9 +1,10 @@
 <script setup lang="ts">
 // import Live2d from './Live2d.vue'
-import { NButton, NPopover, NSlider, NSwitch } from 'naive-ui'
-import { computed, onMounted, ref } from 'vue'
+import { NButton, NPopover, NSlider, NSwitch, NInput } from 'naive-ui'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useLocalStorageState } from 'vue-hooks-plus'
 
+import GoogleSearch from './GoogleSearch.vue'
 import LearnCard from './LearnCard/LearnCard.vue'
 import LikeImageList from './LikeImageList/LikeImageList.vue'
 import TaskList from './TaskList/TaskList.vue'
@@ -94,6 +95,23 @@ const [live2dMainShow, setLive2dMainShow] = useLocalStorageState('new-tab.live2d
   defaultValue: true
 })
 
+// Search focus state
+const isSearchFocused = ref(false)
+
+// Handle search focus change from the GoogleSearch component
+const handleSearchFocusChange = (focused: boolean) => {
+  isSearchFocused.value = focused
+}
+
+// Watch for changes in isSearchFocused and update body class
+watch(isSearchFocused, (newValue) => {
+  if (newValue) {
+    document.body.classList.add('bg-blur')
+  } else {
+    document.body.classList.remove('bg-blur')
+  }
+})
+
 const goToSettings = () => {
   if (location.href.includes('localhost')) {
     window.open('/options')
@@ -118,6 +136,7 @@ const goToSettings = () => {
       <template #checked> 工作模式 </template>
       <template #unchecked> 时间模式</template>
     </NSwitch>
+    <GoogleSearch @focus-change="handleSearchFocusChange" />
     <div class="flex flex-col items-center justify-center h-full">
       <div v-if="!isTaskMode" class="m-t--16" :style="`transform: rotate(${-randomDeg}deg)`">
         <Time />
@@ -163,6 +182,23 @@ const goToSettings = () => {
 </template>
 
 <style>
+/* Add global styles that will apply to body */
+body.bg-blur {
+  overflow: hidden;
+}
+
+body.bg-blur::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  z-index: 5;
+  pointer-events: none;
+}
+
 .background-item {
   position: fixed;
   top: 0;
@@ -170,7 +206,18 @@ const goToSettings = () => {
   width: 100vw;
   height: 100vh;
   object-fit: cover;
+  transition:
+    transform 0.3s ease-out,
+    filter 0.3s ease;
+  transform-origin: center center;
+  will-change: transform;
 }
+
+body.bg-blur .background-item {
+  transform: scale(1.05);
+  filter: brightness(0.9);
+}
+
 .app {
   overflow: hidden;
   position: absolute;
@@ -188,7 +235,9 @@ const goToSettings = () => {
   text-shadow:
     0 0 8px #666,
     0 0 2px #666;
+  z-index: 10;
 }
+
 .center-above {
   max-width: 100%;
   max-height: 100%;
