@@ -172,7 +172,7 @@ const goToSettings = () => {
       :height="300"
       :resolution="2"
       :style="{ position: 'fixed', bottom: 0, right: 0, zIndex: 1 }"
-      :api-path="'https://evgo2017.com/api/live2d-static-api/indexes'"
+      :api-path="'https://vue-live2d.demo.evgo2017.com/live2d-static-api/indexes'"
       :model="live2dModel"
       :setModel="setLive2dModel"
       :mainShow="live2dMainShow"
