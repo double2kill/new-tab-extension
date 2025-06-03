@@ -47,7 +47,7 @@ const options: { label: string; value: string }[] = [
 
 const handleCursorEffectChange = (value: CursorEffectType) => {
   setNewTabCursorEffect(value)
-  setCursorEffect(value, true)
+  setCursorEffect(value)
 }
 
 const handleAudioPlayChange = async (value: boolean) => {
