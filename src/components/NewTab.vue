@@ -4,6 +4,7 @@ import { NButton, NPopover, NSlider, NSwitch, NInput, NBadge } from 'naive-ui'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useLocalStorageState } from 'vue-hooks-plus'
 
+import About from './About.vue'
 import GoogleSearch from './GoogleSearch.vue'
 import LearnCard from './LearnCard/LearnCard.vue'
 import LikeImageList from './LikeImageList/LikeImageList.vue'
@@ -115,6 +116,9 @@ watch(isSearchFocused, (newValue) => {
   }
 })
 
+const aboutRef = ref()
+const hasUpdate = ref(false)
+
 const goToSettings = () => {
   if (location.href.includes('localhost')) {
     window.open('/options')
@@ -124,6 +128,10 @@ const goToSettings = () => {
     chrome.tabs.create({ url: '/build/options.html' })
     return
   }
+}
+
+const openAbout = () => {
+  aboutRef.value?.openAbout()
 }
 </script>
 
@@ -167,6 +175,28 @@ const goToSettings = () => {
         </button>
       </NBadge>
     </div>
+    <div class="toolbar-item">
+      <NBadge
+        :value="hasUpdate ? 'NEW' : ''"
+        :show-zero="false"
+        :offset="[-3, 3]"
+        color="#ef4444"
+        text-color="white"
+        :class="{ 'badge-animation': hasUpdate }"
+      >
+        <button @click="openAbout" class="toolbar-button relative" title="关于">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path
+              d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"
+            />
+          </svg>
+          <div
+            v-if="hasUpdate"
+            class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"
+          ></div>
+        </button>
+      </NBadge>
+    </div>
   </div>
 
   <div class="app flex flex-col gap-8">
@@ -200,6 +230,7 @@ const goToSettings = () => {
       <NButton round type="primary" @click="goToSettings"> 设置 </NButton>
       <LikeImageList :bgImgSrc="bgImgSrc" :setBgImgSrc="setBgImgSrc" />
     </div>
+    <About ref="aboutRef" @update-status="hasUpdate = $event" />
     <VueLive2d
       class="live2d"
       :width="300"
@@ -250,6 +281,26 @@ body.bg-blur::before {
 body.bg-blur .background-item {
   transform: scale(1.05);
   filter: brightness(0.9);
+}
+
+@keyframes badge-bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-3px);
+  }
+  60% {
+    transform: translateY(-1px);
+  }
+}
+
+.badge-animation {
+  animation: badge-bounce 2s ease-in-out infinite;
 }
 
 .toolbar {
@@ -344,7 +395,9 @@ body.bg-blur .background-item {
   position: absolute;
   bottom: 20px;
   left: 20px;
+  align-items: center;
 }
+
 .mode-switch {
   z-index: 10;
 }
