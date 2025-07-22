@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // import Live2d from './Live2d.vue'
-import { NButton, NPopover, NSlider, NSwitch, NInput } from 'naive-ui'
+import { NButton, NPopover, NSlider, NSwitch, NInput, NBadge } from 'naive-ui'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useLocalStorageState } from 'vue-hooks-plus'
 
@@ -11,10 +11,13 @@ import TaskList from './TaskList/TaskList.vue'
 import Time from './Time.vue'
 
 import VueLive2d from '@/components/VueLive2d/index.vue'
+import { useTaskManager } from '@/hooks/useTaskManager'
 import { setCursorEffect } from '@/utils/cursorEffect'
 
 const MIN = -120
 const MAX = 120
+
+const { unCompletedTaskCount } = useTaskManager()
 
 const getRandomInteger = (min: number, max: number) => {
   min = Math.ceil(min)
@@ -126,16 +129,47 @@ const goToSettings = () => {
 
 <template>
   <img v-if="bgImgSrc" class="background-item" :src="bgImgSrc" alt="Bing每日壁纸UHD超高清原图" />
+
+  <!-- 左侧工具栏 -->
+  <div class="toolbar">
+    <div class="toolbar-item">
+      <button
+        @click="handleTaskModeChange(false)"
+        :class="['toolbar-button', { active: !isTaskMode }]"
+        title="时间模式"
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <path
+            d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z"
+          />
+        </svg>
+      </button>
+    </div>
+    <div class="toolbar-item">
+      <NBadge
+        :value="unCompletedTaskCount"
+        :max="99"
+        :show-zero="false"
+        :offset="[-3, 3]"
+        color="#ef4444"
+        text-color="white"
+      >
+        <button
+          @click="handleTaskModeChange(true)"
+          :class="['toolbar-button', { active: isTaskMode }]"
+          title="工作模式"
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path
+              d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
+            />
+          </svg>
+        </button>
+      </NBadge>
+    </div>
+  </div>
+
   <div class="app flex flex-col gap-8">
-    <NSwitch
-      class="mode-switch m-t-8 important-m-b-0"
-      v-model:value="isTaskMode"
-      @update:value="handleTaskModeChange"
-      style="margin-bottom: 10px"
-    >
-      <template #checked> 工作模式 </template>
-      <template #unchecked> 时间模式</template>
-    </NSwitch>
     <GoogleSearch @focus-change="handleSearchFocusChange" />
     <div class="flex flex-col items-center justify-center h-full">
       <div v-if="!isTaskMode" class="m-t--16" :style="`transform: rotate(${-randomDeg}deg)`">
@@ -216,6 +250,55 @@ body.bg-blur::before {
 body.bg-blur .background-item {
   transform: scale(1.05);
   filter: brightness(0.9);
+}
+
+.toolbar {
+  position: fixed;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 15;
+  padding: 12px 8px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.toolbar-item {
+  display: flex;
+  justify-content: center;
+}
+
+.toolbar-button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid transparent;
+}
+
+.toolbar-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+  transform: scale(1.05);
+}
+
+.toolbar-button.active {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .app {
