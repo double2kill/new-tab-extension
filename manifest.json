@@ -8,7 +8,7 @@
   ],
   "manifest_version": 3,
   "chrome_url_overrides": {
-    "newtab": "build/index.html"
+    "newtab": "/build/index.html"
   },
   "content_scripts": [
     {
