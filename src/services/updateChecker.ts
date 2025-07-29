@@ -12,9 +12,8 @@ interface UpdateInfo {
 
 const GITHUB_MANIFEST_URL =
   'https://raw.githubusercontent.com/double2kill/new-tab-extension/master/manifest.json'
-const CURRENT_VERSION = '1.0.0'
 
-export const checkForUpdates = async (): Promise<UpdateInfo> => {
+export const checkForUpdates = async (currentVersion: string): Promise<UpdateInfo> => {
   try {
     const response = await fetch(GITHUB_MANIFEST_URL)
 
@@ -25,12 +24,12 @@ export const checkForUpdates = async (): Promise<UpdateInfo> => {
     const manifest: ManifestInfo = await response.json()
 
     const latestVersion = manifest.version
-    const hasUpdate = compareVersions(latestVersion, CURRENT_VERSION) > 0
+    const hasUpdate = compareVersions(latestVersion, currentVersion) > 0
 
     return {
       hasUpdate,
       latestVersion,
-      currentVersion: CURRENT_VERSION,
+      currentVersion,
       releaseUrl: 'https://github.com/double2kill/new-tab-extension',
       publishedAt: new Date().toISOString()
     }
@@ -38,8 +37,8 @@ export const checkForUpdates = async (): Promise<UpdateInfo> => {
     console.error('检查更新失败:', error)
     return {
       hasUpdate: false,
-      latestVersion: CURRENT_VERSION,
-      currentVersion: CURRENT_VERSION,
+      latestVersion: currentVersion,
+      currentVersion,
       releaseUrl: '',
       publishedAt: ''
     }

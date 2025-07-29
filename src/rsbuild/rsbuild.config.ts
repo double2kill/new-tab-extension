@@ -30,6 +30,9 @@ export default defineConfig({
       options: './src/pages/options'
     }
   },
+  dev: {
+    writeToDisk: true
+  },
   output: {
     assetPrefix: '.',
     filenameHash: false,

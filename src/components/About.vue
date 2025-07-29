@@ -43,7 +43,7 @@ const checkUpdate = async () => {
     return
   }
 
-  const info = await checkForUpdates()
+  const info = await checkForUpdates(version)
   hasUpdate.value = info.hasUpdate
   updateInfo.value = info
 
