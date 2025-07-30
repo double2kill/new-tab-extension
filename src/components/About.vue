@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NModal } from 'naive-ui'
+import { NModal, NButton } from 'naive-ui'
 import { ref, onMounted } from 'vue'
 
 import { checkForUpdates, getStoredUpdateInfo, setStoredUpdateInfo } from '@/services/updateChecker'
@@ -21,34 +21,20 @@ const buildTime =
         second: '2-digit'
       })
 
-const openAbout = () => {
+const openAbout = async () => {
   showAbout.value = true
-}
-
-const closeAbout = () => {
-  showAbout.value = false
+  await checkUpdate()
 }
 
 const emit = defineEmits(['update-status'])
 
 const checkUpdate = async () => {
-  const storedInfo = getStoredUpdateInfo()
-  const lastCheck = localStorage.getItem('new-tab.last-update-check')
-  const now = Date.now()
-
-  if (storedInfo && lastCheck && now - parseInt(lastCheck) < 3600000) {
-    hasUpdate.value = storedInfo.hasUpdate
-    updateInfo.value = storedInfo
-    emit('update-status', hasUpdate.value)
-    return
-  }
-
   const info = await checkForUpdates(version)
   hasUpdate.value = info.hasUpdate
   updateInfo.value = info
 
   setStoredUpdateInfo(info)
-  localStorage.setItem('new-tab.last-update-check', now.toString())
+  localStorage.setItem('new-tab.last-update-check', Date.now().toString())
   emit('update-status', hasUpdate.value)
 }
 
@@ -58,8 +44,67 @@ const openUpdateUrl = () => {
   }
 }
 
+const exportLocalStorageData = () => {
+  const data: Record<string, any> = {}
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i)
+    if (key) {
+      try {
+        data[key] = JSON.parse(localStorage.getItem(key) || '')
+      } catch {
+        data[key] = localStorage.getItem(key)
+      }
+    }
+  }
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `new-tab-extension-data-${new Date().toISOString().split('T')[0]}.json`
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+}
+
+const importLocalStorageData = () => {
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = '.json'
+  input.onchange = (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target?.result as string)
+          Object.keys(data).forEach((key) => {
+            if (typeof data[key] === 'object') {
+              localStorage.setItem(key, JSON.stringify(data[key]))
+            } else {
+              localStorage.setItem(key, String(data[key]))
+            }
+          })
+          alert('数据导入成功！')
+          location.reload()
+        } catch (error) {
+          alert('导入失败：文件格式错误')
+        }
+      }
+      reader.readAsText(file)
+    }
+  }
+  input.click()
+}
+
 onMounted(() => {
-  checkUpdate()
+  const storedInfo = getStoredUpdateInfo()
+  if (storedInfo) {
+    hasUpdate.value = storedInfo.hasUpdate
+    updateInfo.value = storedInfo
+    emit('update-status', hasUpdate.value)
+  }
 })
 
 defineExpose({
@@ -127,23 +172,50 @@ defineExpose({
           查看更新
         </button>
       </div>
-    </div>
 
-    <template #footer>
-      <div class="text-center pt-2.5">
-        <button
-          @click="closeAbout"
-          class="bg-green-500 text-white border-none px-4 py-2 rounded-full text-sm cursor-pointer inline-flex items-center gap-1.5 transition-all duration-300"
-        >
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-            <path
-              d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
-            />
-          </svg>
-          关闭
-        </button>
+      <div
+        class="bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl p-5 text-center shadow-lg"
+      >
+        <div class="mb-3">
+          <div class="text-base font-bold mb-2 text-gray-800">数据管理</div>
+          <div class="text-sm text-gray-600 mb-4">导出扩展的所有本地存储数据</div>
+        </div>
+        <div class="flex gap-3 justify-center">
+          <NButton
+            @click="exportLocalStorageData"
+            type="success"
+            ghost
+            size="medium"
+            class="export-button"
+          >
+            <template #icon>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <path
+                  d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
+                />
+              </svg>
+            </template>
+            导出数据
+          </NButton>
+          <NButton
+            @click="importLocalStorageData"
+            type="info"
+            ghost
+            size="medium"
+            class="import-button"
+          >
+            <template #icon>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <path
+                  d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
+                />
+              </svg>
+            </template>
+            导入数据
+          </NButton>
+        </div>
       </div>
-    </template>
+    </div>
   </NModal>
 </template>
 
