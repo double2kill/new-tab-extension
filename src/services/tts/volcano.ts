@@ -72,8 +72,8 @@ const kVolcanoTTSSpeakers: TTSSpeaker[] = [
   }
 ]
 
-const userId = '2102480375'
-const appid = '8179836855'
+const userId = '2109425105'
+const appid = '9751273055'
 
 function playBinaryAudio(base64AudioData) {
   // 使用atob函数解码Base64字符串

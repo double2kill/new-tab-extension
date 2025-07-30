@@ -125,7 +125,12 @@ const goToSettings = () => {
     return
   }
   if (chrome) {
-    chrome.tabs.create({ url: '/build/options.html' })
+    const key = chrome.runtime.getManifest().key
+    let optionsUrl = '/build/options.html'
+    if (key) {
+      optionsUrl = optionsUrl.replace('/build/', '/')
+    }
+    chrome.tabs.create({ url: optionsUrl })
     return
   }
 }
