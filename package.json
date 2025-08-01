@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "rsbuild dev --config src/rsbuild/rsbuild.config.ts",
     "build": "pnpm run build:core && pnpm build:content-script",
-    "build:release": "pnpm run build && node update-manifest.js && node src/scripts/copy-manifest.js",
+    "build:release": "node update-manifest.js && pnpm run build && node src/scripts/copy-manifest.js",
     "build:core": "vue-tsc --noEmit && rsbuild build --config src/rsbuild/rsbuild.config.ts",
     "build:content-script": "vue-tsc --noEmit && rsbuild build --config src/rsbuild/rsbuild-content-script.config.ts"
   },
