@@ -1,11 +1,21 @@
 <script setup lang="ts">
 import { AddOutline } from '@vicons/ionicons5'
 import { NButton, NIcon } from 'naive-ui'
-import { onMounted } from 'vue'
+import { onMounted, ref, onErrorCaptured } from 'vue'
 
 import TaskCard from './TaskCard.vue'
 
 import { useTaskManager } from '@/hooks/useTaskManager'
+
+const hasError = ref(false)
+const errorMessage = ref('')
+
+onErrorCaptured((error) => {
+  console.error('TaskList组件错误:', error)
+  hasError.value = true
+  errorMessage.value = error.message || '未知错误'
+  return false
+})
 
 const {
   unCompletedTaskCount,
@@ -14,40 +24,67 @@ const {
   handleCompleteTask,
   handleAddTask,
   handleDeleteTask,
+  resetTaskReminder,
   initializeTaskList
 } = useTaskManager()
 
 onMounted(() => {
-  initializeTaskList()
+  try {
+    initializeTaskList()
+  } catch (error) {
+    console.error('初始化任务列表失败:', error)
+    hasError.value = true
+    errorMessage.value = '初始化失败'
+  }
 })
 </script>
 
 <template>
   <div class="task-container">
-    <div class="task-header">
-      <h2 class="task-title">📝 我的任务</h2>
-      <span class="task-count">{{ unCompletedTaskCount }} 个待完成</span>
+    <div v-if="hasError" class="error-container">
+      <div class="error-message">
+        <h3>加载失败</h3>
+        <p>{{ errorMessage }}</p>
+        <NButton
+          @click="
+            () => {
+              hasError = false
+              initializeTaskList()
+            }
+          "
+        >
+          重试
+        </NButton>
+      </div>
     </div>
 
-    <div class="task-list">
-      <transition-group name="task" tag="div" class="task-grid">
-        <TaskCard
-          v-for="taskItem in unCompletedTaskList"
-          :key="taskItem.id"
-          :data="taskItem"
-          :saveTask="handleSaveTask"
-          :completeTask="handleCompleteTask"
-          :deleteTask="handleDeleteTask"
-        />
-      </transition-group>
+    <div v-else>
+      <div class="task-header">
+        <h2 class="task-title">📝 我的任务</h2>
+        <span class="task-count">{{ unCompletedTaskCount }} 个待完成</span>
+      </div>
 
-      <div class="add-task-wrapper">
-        <NButton class="add-new-card" dashed @click="handleAddTask">
-          <template #icon>
-            <NIcon size="20"><AddOutline /></NIcon>
-          </template>
-          添加新任务
-        </NButton>
+      <div class="task-list">
+        <transition-group name="task" tag="div" class="task-grid">
+          <TaskCard
+            v-for="taskItem in unCompletedTaskList"
+            :key="taskItem.id"
+            :data="taskItem"
+            :saveTask="handleSaveTask"
+            :completeTask="handleCompleteTask"
+            :deleteTask="handleDeleteTask"
+            :resetReminder="resetTaskReminder"
+          />
+        </transition-group>
+
+        <div class="add-task-wrapper">
+          <NButton class="add-new-card" dashed @click="handleAddTask">
+            <template #icon>
+              <NIcon size="20"><AddOutline /></NIcon>
+            </template>
+            添加新任务
+          </NButton>
+        </div>
       </div>
     </div>
   </div>
@@ -65,6 +102,33 @@ onMounted(() => {
   border-radius: 24px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   text-shadow: none;
+}
+
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+
+  .error-message {
+    text-align: center;
+    padding: 20px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 12px;
+
+    h3 {
+      color: #dc2626;
+      margin: 0 0 8px 0;
+      font-size: 18px;
+    }
+
+    p {
+      color: #7f1d1d;
+      margin: 0 0 16px 0;
+      font-size: 14px;
+    }
+  }
 }
 
 .task-header {

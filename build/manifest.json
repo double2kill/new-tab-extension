@@ -1,10 +1,11 @@
 {
   "name": "New Tab",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "New Tab!",
   "permissions": [
     "tabs",
-    "storage"
+    "storage",
+    "notifications"
   ],
   "manifest_version": 3,
   "chrome_url_overrides": {

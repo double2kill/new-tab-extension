@@ -12,13 +12,16 @@ import TaskList from './TaskList/TaskList.vue'
 import Time from './Time.vue'
 
 import VueLive2d from '@/components/VueLive2d/index.vue'
+import { useGlobalReminder } from '@/hooks/useGlobalReminder'
 import { useTaskManager } from '@/hooks/useTaskManager'
 import { setCursorEffect } from '@/utils/cursorEffect'
+import logger from '@/utils/logger'
 
 const MIN = -120
 const MAX = 120
 
 const { unCompletedTaskCount } = useTaskManager()
+const { isActive: reminderActive } = useGlobalReminder()
 
 const getRandomInteger = (min: number, max: number) => {
   min = Math.ceil(min)
@@ -56,8 +59,10 @@ const isTaskMode = computed(() => {
   return workMode.value === WorkMode.Task
 })
 
-const handleTaskModeChange = (value: boolean) => {
-  setWorkMode(value ? WorkMode.Task : WorkMode.Time)
+const handleTaskModeChange = async (value: boolean) => {
+  const newMode = value ? WorkMode.Task : WorkMode.Time
+  setWorkMode(newMode)
+  await logger.info('用户切换工作模式', { from: workMode.value, to: newMode }, 'UserAction')
 }
 
 const isWaiFixed = computed(() => {
@@ -69,6 +74,9 @@ onMounted(async () => {
   randomDeg.value = localStorage.getItem('new-tab.wai.deg')
     ? parseInt(localStorage.getItem('new-tab.wai.deg') as string)
     : getRandomInteger(MIN, MAX)
+
+  await logger.init()
+  await logger.info('新标签页已加载', { workMode: workMode.value }, 'NewTab')
 })
 
 const handleChange = (value: boolean) => {
@@ -119,7 +127,9 @@ watch(isSearchFocused, (newValue) => {
 const aboutRef = ref()
 const hasUpdate = ref(false)
 
-const goToSettings = () => {
+const goToSettings = async () => {
+  await logger.info('用户打开设置页面', null, 'UserAction')
+
   if (location.href.includes('localhost')) {
     window.open('/options')
     return

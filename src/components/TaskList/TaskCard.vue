@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { Edit, Save, Task, TrashCan, Close } from '@vicons/carbon'
-import { NButton, NCard, NIcon, NTooltip } from 'naive-ui'
-import { onMounted, ref, nextTick } from 'vue'
+import { Edit, Save, Task, TrashCan, Close, Time, Calendar } from '@vicons/carbon'
+import { NButton, NCard, NIcon, NTooltip, NTag } from 'naive-ui'
+import { onMounted, ref, nextTick, computed } from 'vue'
+
+import ReminderCountdown from './ReminderCountdown.vue'
+import ReminderEditor from './ReminderEditor.vue'
 
 import type { TaskItem } from '@/hooks/useTaskManager'
+import logger from '@/utils/logger'
 
 const props = defineProps<{
   data: TaskItem
   saveTask: (newData: TaskItem) => void
   completeTask: (id: number) => void
   deleteTask: (id: number) => void
+  resetReminder?: (id: number) => void
 }>()
 
 const isEditMode = ref(false)
@@ -17,10 +22,155 @@ const titleRef = ref<HTMLElement>()
 const descriptionRef = ref<HTMLElement>()
 const originalData = ref<TaskItem>()
 
+// 编辑模式下的本地数据状态
+const editData = ref<TaskItem>({} as TaskItem)
+
+// 快速标签卡功能
+const isNewTask = computed(() => !props.data.updateTime)
+const showQuickTags = computed(() => isNewTask.value && isEditMode.value)
+const selectedQuickTag = ref<string | null>('hour')
+
+// 计算卡片应该显示的颜色类型
+const cardColorType = computed(() => {
+  if (isEditMode.value && selectedQuickTag.value) {
+    return selectedQuickTag.value
+  }
+
+  const data = isEditMode.value ? editData.value : props.data
+  if (data.reminderEnabled && data.reminderTime) {
+    const now = Date.now()
+    const timeDiff = data.reminderTime - now
+
+    if (data.reminderType === 'day') {
+      return 'day'
+    } else if (data.reminderType === 'hour') {
+      if (timeDiff <= 3600000) {
+        // 1小时内
+        return 'hour'
+      } else if (timeDiff <= 7200000) {
+        // 2小时内
+        return '2hour'
+      }
+    }
+  }
+
+  return null
+})
+
+// 提醒时间相关
+const showReminderEditor = ref(false)
+
+// 处理提醒更新
+const handleReminderUpdate = async (data: {
+  reminderTime: number
+  reminderEnabled: boolean
+  reminderType: 'minute' | 'hour' | 'day' | 'custom'
+}) => {
+  // 在展示模式下直接保存任务
+  if (!isEditMode.value) {
+    props.saveTask({
+      ...props.data,
+      reminderTime: data.reminderTime,
+      reminderEnabled: data.reminderEnabled,
+      reminderType: data.reminderType,
+      reminderShown: false,
+      reminderShownTime: undefined
+    })
+
+    await logger.info(
+      '用户更新任务提醒',
+      {
+        taskId: props.data.id,
+        title: props.data.title,
+        oldReminderTime: props.data.reminderTime,
+        newReminderTime: data.reminderTime,
+        reminderType: data.reminderType
+      },
+      'TaskCard'
+    )
+  } else {
+    // 在编辑模式下更新本地数据
+    editData.value.reminderTime = data.reminderTime
+    editData.value.reminderEnabled = data.reminderEnabled
+    editData.value.reminderType = data.reminderType
+    editData.value.reminderShown = false
+    editData.value.reminderShownTime = undefined
+  }
+}
+
+// 取消提醒
+const handleReminderCancel = async () => {
+  // 在展示模式下直接保存任务
+  if (!isEditMode.value) {
+    props.saveTask({
+      ...props.data,
+      reminderEnabled: false,
+      reminderTime: undefined,
+      reminderShown: false,
+      reminderShownTime: undefined
+    })
+
+    await logger.info(
+      '用户取消任务提醒',
+      {
+        taskId: props.data.id,
+        title: props.data.title
+      },
+      'TaskCard'
+    )
+  } else {
+    // 在编辑模式下更新本地数据
+    editData.value.reminderEnabled = false
+    editData.value.reminderTime = undefined
+    editData.value.reminderShown = false
+    editData.value.reminderShownTime = undefined
+  }
+}
+
+const handleQuickTag = (type: 'hour' | 'day' | '2hour') => {
+  const now = Date.now()
+  let reminderTime: number
+  let reminderType: 'hour' | 'day'
+
+  switch (type) {
+    case 'hour':
+      reminderTime = now + 3600000 // 1小时后
+      reminderType = 'hour'
+      break
+    case '2hour':
+      reminderTime = now + 7200000 // 2小时后
+      reminderType = 'hour'
+      break
+    case 'day':
+      // 当天结束时间（23:59:59）
+      const today = new Date()
+      today.setHours(23, 59, 59, 999)
+      reminderTime = today.getTime()
+      reminderType = 'day'
+      break
+  }
+
+  // 更新本地编辑数据
+  editData.value.reminderTime = reminderTime
+  editData.value.reminderEnabled = true
+  editData.value.reminderType = reminderType
+  editData.value.reminderShown = false
+  editData.value.reminderShownTime = undefined
+  selectedQuickTag.value = type
+
+  console.log('设置快速提醒:', type, '时间:', new Date(reminderTime).toLocaleString())
+}
+
 const setEditMode = (value: boolean) => {
   isEditMode.value = value
   if (value) {
     originalData.value = { ...props.data }
+    // 初始化编辑数据
+    editData.value = { ...props.data }
+    // 只有新建任务时才重置选中状态，但保留默认提醒
+    if (!props.data.updateTime && !props.data.reminderTime) {
+      selectedQuickTag.value = null
+    }
     nextTick(() => {
       if (titleRef.value) {
         titleRef.value.focus()
@@ -30,6 +180,9 @@ const setEditMode = (value: boolean) => {
         }
       }
     })
+  } else {
+    // 退出编辑模式时关闭提醒编辑器
+    showReminderEditor.value = false
   }
 }
 
@@ -52,6 +205,30 @@ const handleDescriptionFocus = () => {
 onMounted(() => {
   if (!props.data.updateTime) {
     setEditMode(true)
+    // 只在真正的新任务（没有标题和描述）时设置默认提醒
+    nextTick(() => {
+      if (!props.data.title && !props.data.description) {
+        handleQuickTag('hour')
+      }
+    })
+  } else {
+    // 对于已存在的任务，根据提醒时间设置颜色
+    if (props.data.reminderEnabled && props.data.reminderTime) {
+      const now = Date.now()
+      const timeDiff = props.data.reminderTime - now
+
+      if (props.data.reminderType === 'day') {
+        selectedQuickTag.value = 'day'
+      } else if (props.data.reminderType === 'hour') {
+        if (timeDiff <= 3600000) {
+          // 1小时内
+          selectedQuickTag.value = 'hour'
+        } else if (timeDiff <= 7200000) {
+          // 2小时内
+          selectedQuickTag.value = '2hour'
+        }
+      }
+    }
   }
 })
 
@@ -63,27 +240,68 @@ const handleTitleFocus = () => {
   }
 }
 
-const handleSave = () => {
+const handleSave = async () => {
   const title = titleRef.value?.textContent?.trim() || ''
   const description = descriptionRef.value?.textContent?.trim() || ''
 
-  props.saveTask({
-    ...props.data,
+  // 确保提醒状态被重置
+  const taskData = {
+    ...editData.value,
     title,
     description,
-    updateTime: Date.now()
-  })
+    updateTime: Date.now(),
+    reminderShown: false,
+    reminderShownTime: undefined
+  }
+
+  props.saveTask(taskData)
   setEditMode(false)
+
+  // 记录保存日志
+  await logger.info(
+    '用户保存任务',
+    {
+      taskId: taskData.id,
+      title: taskData.title,
+      hasReminder: taskData.reminderEnabled,
+      reminderTime: taskData.reminderTime
+    },
+    'TaskCard'
+  )
+
+  // 根据实际的提醒时间类型设置selectedQuickTag，而不是重置为null
+  if (editData.value.reminderEnabled && editData.value.reminderTime) {
+    const now = Date.now()
+    const timeDiff = editData.value.reminderTime - now
+
+    if (editData.value.reminderType === 'day') {
+      selectedQuickTag.value = 'day'
+    } else if (editData.value.reminderType === 'hour') {
+      if (timeDiff <= 3600000) {
+        // 1小时内
+        selectedQuickTag.value = 'hour'
+      } else if (timeDiff <= 7200000) {
+        // 2小时内
+        selectedQuickTag.value = '2hour'
+      }
+    }
+  } else {
+    selectedQuickTag.value = null
+  }
 }
 
 const handleCancel = () => {
-  if (titleRef.value && originalData.value) {
-    titleRef.value.textContent = originalData.value.title || ''
-  }
-  if (descriptionRef.value && originalData.value) {
-    descriptionRef.value.textContent = originalData.value.description || ''
+  if (originalData.value) {
+    editData.value = { ...originalData.value }
+    if (titleRef.value) {
+      titleRef.value.textContent = originalData.value.title || ''
+    }
+    if (descriptionRef.value) {
+      descriptionRef.value.textContent = originalData.value.description || ''
+    }
   }
   setEditMode(false)
+  selectedQuickTag.value = null // 重置选中状态
 }
 
 const completeTask = () => {
@@ -92,6 +310,17 @@ const completeTask = () => {
 
 const deleteTask = () => {
   props.deleteTask(props.data.id || 0)
+}
+
+const resetReminder = async () => {
+  if (props.resetReminder) {
+    props.resetReminder(props.data.id || 0)
+    await logger.info(
+      '用户重置任务提醒',
+      { taskId: props.data.id, title: props.data.title },
+      'TaskCard'
+    )
+  }
 }
 
 const handleKeydown = (e: KeyboardEvent) => {
@@ -113,7 +342,65 @@ const handlePaste = (e: ClipboardEvent) => {
 
 <template>
   <div class="task-card-wrapper">
-    <NCard class="task-card" :class="{ 'edit-mode': isEditMode }">
+    <NCard
+      class="task-card"
+      :class="{
+        'edit-mode': isEditMode,
+        'selected-hour': cardColorType === 'hour',
+        'selected-2hour': cardColorType === '2hour',
+        'selected-day': cardColorType === 'day'
+      }"
+    >
+      <!-- 快速标签卡 - 移到header前面 -->
+      <div v-if="showQuickTags" class="quick-tags">
+        <div class="quick-tags-buttons">
+          快速提醒
+          <NTag
+            type="error"
+            size="small"
+            class="quick-tag"
+            :class="{ selected: selectedQuickTag === 'hour' }"
+            @click="handleQuickTag('hour')"
+          >
+            <template #icon>
+              <NIcon size="12"><Time /></NIcon>
+            </template>
+            1小时
+          </NTag>
+          <NTag
+            type="warning"
+            size="small"
+            class="quick-tag"
+            :class="{ selected: selectedQuickTag === '2hour' }"
+            @click="handleQuickTag('2hour')"
+          >
+            <template #icon>
+              <NIcon size="12"><Time /></NIcon>
+            </template>
+            2小时
+          </NTag>
+          <NTag
+            size="small"
+            class="quick-tag"
+            :class="{ selected: selectedQuickTag === 'day' }"
+            @click="handleQuickTag('day')"
+          >
+            <template #icon>
+              <NIcon size="12"><Calendar /></NIcon>
+            </template>
+            当天
+          </NTag>
+        </div>
+      </div>
+
+      <!-- 提醒时间显示 - 移到header前面 -->
+      <ReminderCountdown
+        :reminder-enabled="(isEditMode ? editData : data).reminderEnabled"
+        :reminder-time="(isEditMode ? editData : data).reminderTime"
+        :reminder-shown="(isEditMode ? editData : data).reminderShown"
+        :reminder-shown-time="(isEditMode ? editData : data).reminderShownTime"
+      />
+
       <div class="task-header">
         <div class="task-title-area">
           <h3
@@ -136,6 +423,16 @@ const handlePaste = (e: ClipboardEvent) => {
 
         <div class="action-buttons">
           <template v-if="!isEditMode">
+            <!-- 展示模式下的提醒按钮 -->
+            <ReminderEditor
+              v-model="showReminderEditor"
+              :reminder-enabled="data.reminderEnabled"
+              :reminder-time="data.reminderTime"
+              :reminder-type="data.reminderType"
+              @update:reminder="handleReminderUpdate"
+              @cancel="handleReminderCancel"
+            />
+
             <NTooltip trigger="hover" placement="top">
               <template #trigger>
                 <NButton size="small" circle class="action-btn edit-btn" @click="setEditMode(true)">
@@ -166,6 +463,15 @@ const handlePaste = (e: ClipboardEvent) => {
                 </NButton>
               </template>
               删除
+            </NTooltip>
+
+            <NTooltip v-if="data.reminderShown" trigger="hover" placement="top">
+              <template #trigger>
+                <NButton size="small" circle class="action-btn reset-btn" @click="resetReminder()">
+                  <NIcon size="14"><Time /></NIcon>
+                </NButton>
+              </template>
+              重置提醒
             </NTooltip>
           </template>
 
@@ -223,7 +529,7 @@ const handlePaste = (e: ClipboardEvent) => {
   border: 1px solid #e5e7eb;
   background: #ffffff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   text-shadow: none;
 
   &:hover {
@@ -234,6 +540,31 @@ const handlePaste = (e: ClipboardEvent) => {
   &.edit-mode {
     border-color: #22c55e;
     box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
+  }
+
+  // 选中状态的颜色变化 - 按时间紧迫性排序
+  &.selected-hour {
+    border-color: #dc2626;
+    background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+    box-shadow:
+      0 0 0 2px rgba(220, 38, 38, 0.2),
+      0 4px 12px rgba(220, 38, 38, 0.1);
+  }
+
+  &.selected-2hour {
+    border-color: #f59e0b;
+    background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);
+    box-shadow:
+      0 0 0 2px rgba(245, 158, 11, 0.2),
+      0 4px 12px rgba(245, 158, 11, 0.1);
+  }
+
+  &.selected-day {
+    border-color: #6b7280;
+    background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+    box-shadow:
+      0 0 0 2px rgba(107, 114, 128, 0.2),
+      0 4px 12px rgba(107, 114, 128, 0.1);
   }
 
   .n-card__content {
@@ -324,6 +655,16 @@ const handlePaste = (e: ClipboardEvent) => {
       }
     }
 
+    &.reset-btn {
+      background: #f0fdf4;
+      color: #059669;
+
+      &:hover {
+        background: #dcfce7;
+        color: #047857;
+      }
+    }
+
     &.save-btn {
       background: #f0fdf4;
       color: #16a34a;
@@ -383,6 +724,48 @@ const handlePaste = (e: ClipboardEvent) => {
   }
 }
 
+.quick-tags {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+
+  .quick-tags-title {
+    font-size: 13px;
+    color: #374151;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .quick-tags-buttons {
+    display: flex;
+    gap: 8px;
+
+    .quick-tag {
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+
+      &.selected {
+        border-color: currentColor;
+        box-shadow: 0 0 0 2px currentColor;
+        font-weight: 600;
+        transform: scale(1.05);
+      }
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .task-card.n-card {
     .n-card__content {
@@ -401,6 +784,17 @@ const handlePaste = (e: ClipboardEvent) => {
     .action-btn {
       width: 26px;
       height: 26px;
+    }
+  }
+
+  .quick-tags {
+    .quick-tags-buttons {
+      flex-wrap: wrap;
+      gap: 6px;
+
+      .quick-tag {
+        font-size: 11px;
+      }
     }
   }
 }
